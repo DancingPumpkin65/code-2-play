@@ -58,7 +58,7 @@ dialogInfoImage.src = 'nin/Ui/Dialog/DialogInfo.png';
 
 // Item and death sprites
 const itemImage = new Image(); itemImage.src = 'nin/Actor/Characters/KnightGold/SeparateAnim/Item.png';
-const deadImage = new Image(); deadImage.src = 'nin/Actor/Characters/KnightGold/SeparateAnim/dead.png';
+const deadImage = new Image(); deadImage.src = 'nin/Actor/Characters/KnightGold/SeparateAnim/Dead.png';
 
 // --- Image Loading Check ---
 let imagesLoaded = 0;
