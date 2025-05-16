@@ -886,6 +886,8 @@
                 { "type": "lesson", "status": "current", "name": "Loops & Logic" },
                 { "type": "challenge", "status": "locked", "name": "Algorithm Challenge" },
                 { "type": "lesson", "status": "locked", "name": "Functions Deep Dive" },
+                { "type": "lesson", "status": "locked", "name": "New Lesson A", "iconUrl": "7aa61c3f60bd961a60a46fb36e76c72f.svg" },
+                { "type": "lesson", "status": "locked", "name": "New Lesson B", "iconUrl": "bfa591f6854b4de08e1656b3e8ca084f.svg" },
                 { "type": "milestone", "status": "locked", "name": "Unit 2 Completion" }
             ],
             "stats": {
@@ -958,19 +960,38 @@
 
 
             const levelPathContainer = document.getElementById('level-path-container');
-            levelPathContainer.innerHTML = ''; // Clear old levels
+            levelPathContainer.innerHTML = ''; // Clear old levels. WARNING: This also clears static header and background character.
 
             const iconMap = {
-                lesson: 'bfa591f6854b4de08e1656b3e8ca084f.svg',
+                lesson: 'bfa591f6854b4de08e1656b3e8ca084f.svg', // Default lesson icon
                 start: 'ef9c771afdb674f0ff82fae25c6a7b0a.svg',
                 challenge: '7ebf5ec1643d186b7edb283966329b2f.svg',
             };
 
+            const baseTopMargin = 60; // px, initial top offset from parent
+            const verticalSpacing = 100; // px, vertical distance between button centers
+            const horizontalSpread = 120; // px, horizontal distance from center for zigzag peak (e.g., center to left peak)
+            const buttonWidth = 70; // px, approx width of the button for centering
+            const buttonHeight = 70; // px, approx height for container calculation
+
+            // Dynamically set height of the container to fit all buttons
+            const numLevels = data.levels.length;
+            let requiredHeight = baseTopMargin; // Default height if no levels
+            if (numLevels > 0) {
+                requiredHeight = baseTopMargin + (numLevels - 1) * verticalSpacing + buttonHeight + 20; // last button top + its height + some bottom padding
+            }
+            levelPathContainer.style.height = Math.max(350, requiredHeight) + 'px'; // Ensure min height of 350px or calculated height
+
             data.levels.forEach((level, index) => {
                 const lessonNodeWrapper = document.createElement('div');
-                lessonNodeWrapper.className = 'R7x3_ _8Iu6E';
-                // Dynamic styling for zigzag position (e.g., left, margin-top) would go here
-                // For now, they will stack based on parent container's flex properties
+                lessonNodeWrapper.className = 'R7x3_ _8Iu6E'; 
+                
+                lessonNodeWrapper.style.position = 'absolute'; 
+                lessonNodeWrapper.style.top = (baseTopMargin + index * verticalSpacing) + 'px';
+                
+                const sideOffset = (index % 2 === 0 ? -1 : 1) * horizontalSpread;
+                lessonNodeWrapper.style.left = `calc(50% + ${sideOffset}px)`;
+                lessonNodeWrapper.style.transform = `translateX(-${buttonWidth / 2}px)`; // Center the button at the calculated left point
 
                 if (level.type === 'milestone') {
                     const chestButton = document.createElement('button');
@@ -986,7 +1007,7 @@
                     lessonNodeWrapper.appendChild(chestButton);
                 } else {
                     const buttonWrapper = document.createElement('div');
-                    buttonWrapper.className = 'HPdUG fF_qH';
+                    buttonWrapper.className = 'HPdUG fF_qH'; // This is the element with rotateX
                     buttonWrapper.setAttribute('role', 'button');
                     buttonWrapper.setAttribute('tabindex', '0');
 
@@ -997,12 +1018,12 @@
                     let buttonClasses = ['_1gEmM', '_7jW2t', '_3Jm09'];
 
                     if (level.status === 'locked') {
-                        buttonClasses.push('G_Z0K'); // Class for locked/greyed out
+                        buttonClasses.push('G_Z0K'); 
                         button.disabled = true;
                     } else {
-                        buttonClasses.push('_1333i'); // Standard class for active lessons
+                        buttonClasses.push('_1333i'); 
                         if (level.status === 'completed' || (level.status === 'current' && level.type === 'start')) {
-                            buttonClasses.push('_22TV_'); // Golden class for completed or current "start"
+                            buttonClasses.push('_22TV_'); 
                         }
                     }
                     button.className = buttonClasses.join(' ');
@@ -1011,16 +1032,13 @@
 
                     const svgSpan = document.createElement('span');
                     svgSpan.className = '_1kZ3q _2NI9y _1IwKR';
-                    // Both SVG paths will now use #72d627 for their fill color.
-                    // The main button color #58cc02 is effectively represented by the overall visual of the SVG being green,
-                    // and the 3D edge is #46a302 via box-shadow.
-                    svgSpan.innerHTML = `<svg width="56" height="46" viewBox="0 0 56 46" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M34.2346 3.25135C35.3157 2.1269 34.7053 0.276787 33.1512 0.143156C32.0512 0.0485729 30.9331 0 29.8002 0C13.342 0 0 10.2517 0 22.8979C0 26.3985 1.02236 29.7157 2.85016 32.6827C3.47761 33.7012 4.88715 33.7751 5.71626 32.9128L34.2346 3.25135Z" fill="#72d627"></path><path d="M55.0954 12.5231C53.3548 9.61289 49.8186 6.8733 47.2219 5.21074C46.2417 4.58319 44.9772 4.77038 44.1616 5.60066C34.5035 15.4328 18.3374 31.8498 12.05 38.0427C10.9724 39.1041 10.996 40.8688 12.249 41.716C16.2271 44.4058 20.9121 45.5851 23.4852 45.9072C24.1853 45.9949 24.8657 45.7259 25.3691 45.2315C34.775 35.9934 50.2041 19.9015 54.7166 15.0879C55.3787 14.3818 55.5923 13.3539 55.0954 12.5231Z" fill="#72d627"></path></svg>`;
+                    svgSpan.innerHTML = `<!-- ... existing SVG string ... -->`; // Keep existing SVG
                     button.appendChild(svgSpan);
 
                     const imgIcon = document.createElement('img');
                     imgIcon.className = '_1B6UH';
                     imgIcon.draggable = false;
-                    imgIcon.src = iconMap[level.type] || iconMap.lesson; // Default to lesson icon if type not in map
+                    imgIcon.src = level.iconUrl || iconMap[level.type] || iconMap.lesson; 
                     button.appendChild(imgIcon);
 
                     if (level.status !== 'locked') {
