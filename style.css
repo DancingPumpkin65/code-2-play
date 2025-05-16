@@ -1,3 +1,10 @@
+@font-face {
+    font-family: 'MyFont';
+    src: url('dinroundpro-medi/DINRoundPro-Bold.otf') format('opentype');
+    font-weight: 800;
+    font-style: normal;
+}
+
 body {
     display: flex;
     flex-direction: column;
@@ -5,15 +12,255 @@ body {
     justify-content: center;
     height: 100vh;
     margin: 0;
-    background-color: #f0f0f0;
-    font-family: Arial, sans-serif;
+    background-color: #131f24;
+    overflow: hidden;
+    font-family: 'MyFont', Arial, sans-serif; /* Updated font */
+}
+
+.game-container { /* New wrapper style */
+    display: flex;
+    width: 100%;
+    max-width: 1400px; /* Optional: constrain max width */
+    height: 100vh; /* Make it full height */
+    position: relative; /* Needed for absolute positioning of sidebar on mobile */
+}
+
+.left-sidebar {
+    width: 210px; /* Fixed width for sidebar */
+    padding: 16px;
+    border-right: 2px solid #37464f;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    background-color: #131f24; /* Match body background */
+    transition: width 0.3s ease, height 0.3s ease, padding 0.3s ease; /* Smooth transition */
+}
+
+._3vxyy { /* Duolingo logo container */
+    padding: 8px 16px;
+}
+._3qEOY img.sOuBs { /* Main logo part */
+    width: 150px;
+}
+
+.left-sidebar nav ul {
+    list-style: none;
+    padding: 0;
+}
+    
+.nav-item { 
+    display: flex;
+    align-items: center;
+    height: 48px;
+    padding: 0 16px; 
+    cursor: pointer;
+    border-radius: 12px;
+    transition: background-color 0.2s ease, color 0.2s ease;
+    gap: 12px; 
+    color: #A0A0A0; 
+    margin-bottom: 10px;
+}
+.nav-item-icon-img { 
+    width: 24px; 
+    height: 24px; 
+}
+.nav-item-label { 
+    font-weight: 700; 
+    font-size: 15px;
+}
+
+.nav-item:hover {
+    background: rgba(255,255,255,0.08); 
+    color: #FFFFFF;
+}
+
+.nav-item.active {
+    background: #1a202c; 
+    color: #3f9eca; 
+    border-left: 3px solid #3f9eca; 
+}
+.nav-item.active.learn-active { 
+    background: #1a202c; 
+    color: #3f9eca;
+    border-left-color: #3f9eca; /* Ensure this is for desktop */
+    border-bottom-color: transparent; /* Reset for mobile if it was set */
+}
+
+.game-content { /* New style for main game area */
+    flex-grow: 1; /* Takes remaining space */
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 20px;
+    overflow-y: auto; /* Allow content to scroll if needed, esp. on mobile */
 }
 
 canvas {
-    border: 2px solid #333;
+    border: 2px solid #37464f;
     background-color: #fff;
+    border-radius: 16px;
+    /* Default aspect ratio for larger screens if needed, or remove if always dynamic */
 }
 
 p {
     font-size: 1.2em;
+}
+
+.buttons {
+  display: grid;
+  grid-template-rows: 60px 60px;
+  grid-template-columns: 60px 60px 60px;
+  justify-content: center;
+  justify-items: center;
+  justify-self: center;
+}
+
+.btn {
+  width: 50px;
+  height: 50px;
+  border: 2px solid white;
+  border-radius: 8px;
+  background: #58cc02;
+  color: white;
+  font-size: 24px;
+  cursor: pointer;
+  transition: border-width 0.1s ease, transform 0.1s ease;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+#btn-up { grid-column: 2; }
+#btn-down { grid-column: 2; grid-row: 2; }
+#btn-left { grid-column: 1; grid-row: 2; }
+#btn-right { grid-column: 3; grid-row: 2; }
+
+/* Pressed states */
+.press-up {
+  border-width: 1px 3px 5px 3px; /* top, right, bottom, left */
+  transform: translateY(-2px);
+}
+.press-down {
+  border-width: 5px 3px 1px 3px;
+  transform: translateY(2px);
+}
+.press-left {
+  border-width: 3px 5px 3px 1px;
+  transform: translateX(-2px);
+}
+.press-right {
+  border-width: 3px 1px 3px 5px;
+  transform: translateX(2px);
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+    .game-container {
+        flex-direction: column-reverse; /* Stack sidebar (nav) below game content */
+        padding-bottom: 60px; /* Add padding to prevent overlap with absolute positioned nav */
+    }
+
+    .left-sidebar {
+        width: 100%; /* Full width for bottom nav */
+        height: 60px; /* Fixed height for bottom nav */
+        padding: 0 8px; /* Adjust padding */
+        border-right: none; /* Remove right border */
+        border-top: 2px solid #37464f; /* Add top border */
+        flex-direction: row; /* Align items horizontally */
+        justify-content: space-around; /* Distribute items evenly */
+        align-items: center; /* Center items vertically */
+        position: absolute; /* Position at the bottom of game-container */
+        bottom: 0;
+        left: 0;
+        right: 0;
+        z-index: 1000; /* Ensure it's above other content */
+    }
+
+    .left-sidebar nav {
+        width: 100%;
+    }
+
+    .left-sidebar nav ul {
+        display: flex;
+        justify-content: space-around;
+        width: 100%;
+        height: 100%;
+        margin: 0;
+    }
+
+    .nav-item {
+        flex-direction: column; /* Stack icon and label vertically if labels were visible */
+        justify-content: center; /* Center content for icon-only view */
+        align-items: center;
+        height: 100%; /* Take full height of the nav bar */
+        padding: 0 8px; /* Adjust padding for smaller items */
+        margin-bottom: 0; /* Remove bottom margin */
+        flex-grow: 1; /* Allow items to grow and fill space */
+        border-left: none !important; /* Remove left border from active state */
+    }
+    .nav-item.active {
+        border-left: none; /* Remove left border from active state */
+        border-bottom: 3px solid #3f9eca; /* Highlight active with bottom border */
+    }
+
+
+    .nav-item-label {
+        display: none; /* Hide text labels on small screens */
+    }
+    .nav-item-icon-img {
+        width: 28px; /* Slightly larger icons for touch */
+        height: 28px;
+    }
+
+    ._3vxyy { /* Hide logo container on small screens */
+        display: none;
+    }
+
+    .game-content {
+        padding: 10px; /* Reduce padding */
+        /* Ensure game content does not go under the fixed/absolute nav bar */
+        /* padding-bottom will be handled by game-container if nav is absolute within it */
+    }
+
+    canvas {
+        width: 100%; /* Make canvas responsive */
+        height: auto; /* Maintain aspect ratio */
+        max-width: 100%; /* Ensure it doesn't overflow */
+        aspect-ratio: 11 / 14; /* Correct aspect ratio for 11x14 grid */
+    }
+
+    .buttons {
+        grid-template-rows: 50px 50px;
+        grid-template-columns: 50px 50px 50px;
+        gap: 5px; /* Reduce gap for smaller screens */
+    }
+    .btn {
+        width: 45px;
+        height: 45px;
+        font-size: 20px;
+    }
+}
+
+@media (max-width: 480px) {
+    /* Further adjustments for very small screens if needed */
+    .left-sidebar { /* Bottom nav bar */
+        height: 50px; /* Slightly smaller nav bar */
+    }
+     .game-container {
+        padding-bottom: 50px; /* Adjust padding for smaller nav */
+    }
+    .nav-item-icon-img {
+        width: 24px;
+        height: 24px;
+    }
+    .buttons {
+        grid-template-rows: 40px 40px;
+        grid-template-columns: 40px 40px 40px;
+    }
+    .btn {
+        width: 35px;
+        height: 35px;
+        font-size: 18px;
+    }
 }

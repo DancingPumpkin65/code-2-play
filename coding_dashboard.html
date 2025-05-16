@@ -6,6 +6,13 @@
     <title>Coding Dashboard - Duolingo Style</title>
     <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800&display=swap" rel="stylesheet">
     <style>
+
+        @font-face {
+            font-family: 'MyFont';
+            src: url('dinroundpro-medi/DINRoundPro-Bold.otf') format('opentype');
+            font-weight: 800;
+            font-style: normal;
+        }
         :root {
             --bg-color: #131f24; /* Updated from dsdsds.txt */
             --primary-text: #FFFFFF; /* Updated from dsdsds.txt */
@@ -15,7 +22,7 @@
             --accent-blue: #3f9eca; /* From 'left navbar life learn' in dsdsds.txt - for active learn */
             --locked-gray: #4A5568; /* Adjusted for new theme */
             --panel-bg: #1A202C; /* Adjusted for new theme - slightly darker than bg */
-            --font-family: "Nunito", sans-serif;
+            --font-family: 'MyFont', sans-serif; /* Updated from dsdsds.txt */
             --base-font-size: 16px;
             --border-radius: 12px;
             --spacing-unit: 4px;
@@ -29,7 +36,6 @@
             font-size: var(--base-font-size);
             display: flex;
             justify-content: center;
-            padding: calc(var(--spacing-unit) * 4); /* 16px */
             box-sizing: border-box;
             min-height: 100vh;
         }
@@ -47,6 +53,8 @@
             display: flex;
             flex-direction: column;
             gap: calc(var(--spacing-unit) * 2); /* 8px */
+            border-right: 2px solid #37464f; /* Added border */
+            padding-right: calc(var(--spacing-unit) * 2); /* Added padding to prevent content overlap */
         }
         
         /* Duolingo's logo structure from dsdsds.txt */
@@ -94,20 +102,14 @@
         }
 
         .nav-item.active {
-            background: var(--panel-bg); /* A subtle background for active */
-            color: var(--accent-green); /* Use the main button color for active text */
-            border-left: 3px solid var(--accent-green);
+            background: #1a202c; /* A subtle background for active */
+            color: var(--accent-blue); /* Use the main button color for active text */
+            border-left: 3px solid var(--accent-blue); /* Left border for active item */
         }
          .nav-item.active.learn-active { /* Specific for 'Learn' item if active */
-            background: var(--accent-blue); /* Color from dsdsds.txt for active learn */
-            color: var(--primary-text);
-            border-left-color: var(--primary-text);
-        }
-        .nav-item.active .nav-item-icon-img {
-            filter: brightness(0) saturate(100%) invert(68%) sepia(68%) saturate(636%) hue-rotate(86deg) brightness(101%) contrast(91%); /* Makes icon --accent-green */
-        }
-        .nav-item.active.learn-active .nav-item-icon-img {
-             filter: brightness(0) invert(1); /* Makes icon white for learn-active */
+            background: #1a202c; /* Color from dsdsds.txt for active learn */
+            color: var(--accent-blue);
+            border-left-color: var(--accent-blue);
         }
 
 
@@ -118,6 +120,10 @@
             width: 100%;
             max-width: 1200px; /* Adjusted max-width */
             gap: 20px; /* Adjusted gap */
+        }
+
+        .quest-row {
+            display: flex;;
         }
 
         .sidebar {
@@ -133,7 +139,7 @@
             flex-direction: column;
             background-color: transparent; /* Left sidebar itself is transparent, nav items have bg */
             box-shadow: none;
-            padding: 0;
+            padding: calc(var(--spacing-unit)* 4);
         }
 
         .logo {
@@ -185,7 +191,7 @@
         .center-content {
             flex: 1;
             min-width: 300px; /* Ensure it doesn't get too squished */
-            padding: 0;
+            padding: calc(var(--spacing-unit)* 4);
         }
 
         .center-header {
@@ -200,7 +206,7 @@
         }
 
         .center-header-title {
-            color: #ffffff; /* White text */
+            color: #ffffffb6; /* White text */
             font-size: 16px; /* Adjusted size */
             font-weight: bold;
         }
@@ -211,7 +217,7 @@
 
 
         .guidebook-btn {
-            background-color: #4caf50; /* Slightly darker green than header */
+            background-color: #58cc02; /* Slightly darker green than header */
             color: #ffffff;
             padding: 8px 16px;
             border: none;
@@ -220,8 +226,8 @@
             font-weight: bold;
             font-size: 14px;
             transition: background-color 0.2s ease;
-            box-shadow: 0 2px 3px rgba(0,0,0,0.2);
-            border-bottom: 2px solid #388e3c; /* Duolingo button style */
+            box-shadow: 0 2px 0px rgba(0, 0, 0, 0.2);
+            border: 2px solid #0003;
         }
         .guidebook-btn:hover, .guidebook-btn:focus {
             background-color: #43a047;
@@ -349,16 +355,35 @@
             gap: 15px; /* Adjusted gap */
             background-color: transparent; /* Right sidebar itself is transparent */
             box-shadow: none;
-            padding: 0;
+            padding: calc(var(--spacing-unit)* 4);
+        }
+
+        .sidebar-panel {
+            background-color: #131f24;
+            border: 2px solid #37464f;
+            border-radius: var(--border-radius, 8px); /* Use existing var or default */
+            padding: calc(var(--spacing-unit) * 2); /* Consistent padding */
         }
 
         .stats-bar {
             display: flex;
             justify-content: space-around;
             align-items: center;
-            background-color: #3b4a69; /* Consistent panel background */
             padding: 10px;
             border-radius: 12px;
+            font-weight: 700;
+        }
+
+        .view-all-link {
+            font-size: 12px;
+            color: #49c0f8; /* Brighter green */
+            text-decoration: none;
+            font-weight: bold;
+            font-weight: 700;
+        }
+
+        .league-body {
+            display: flex;
         }
 
         .stat-item {
@@ -366,7 +391,7 @@
             align-items: center;
             gap: 6px;
             font-size: 13px;
-            color: #c0c8d4;
+            color: #ffffff;
         }
         .stat-item .stat-icon { font-size: 18px; }
         .stat-item .flag-icon { font-size: 22px; border-radius: 50%; } 
@@ -378,14 +403,12 @@
 
 
         .super-callout, .league-box, .quests-panel {
-            background-color: #3b4a69; /* Consistent panel background */
             padding: 15px;
             border-radius: 12px;
         }
 
         .super-callout {
-            text-align: center;
-            border-top: 3px solid #7b1fa2; /* Purple from image */
+            text-align: left;
         }
         .super-callout-icon { /* Rainbow owl from image */
             width: 50px;
@@ -413,7 +436,7 @@
             line-height: 1.4;
         }
         .super-btn {
-            background-color: var(--accent-green); /* Main button color */
+            background-color: #3c4dff; /* Main button color */
             color: #FFFFFF;
             padding: calc(var(--spacing-unit) * 2.5) calc(var(--spacing-unit) * 5); 
             border: none;
@@ -424,13 +447,17 @@
             transition: background-color 0.2s ease;
             display: block;
             width: 100%;
-            box-shadow: 0 2px 0 #4aa502; /* Was darken(var(--accent-green), 10%) */
+            box-shadow: 0 2px 0 #3f22ec; /* Was darken(var(--accent-green), 10%) */
         }
         .super-btn:hover {
-            background-color: #6ae002; /* Was lighten(var(--accent-green), 5%) */
+            background-color: #4958fd; /* Was lighten(var(--accent-green), 5%) */
         }
          .super-btn:active {
-            background-color: #50bb02; /* Was darken(var(--accent-green), 5%) */
+            background-color: #4958fd; /* Was darken(var(--accent-green), 5%) */
+        }
+
+        .left-sidebar nav ul li {
+            margin-bottom: 10px;
         }
         
         /* League Card */
@@ -783,7 +810,7 @@
         *, :after, :before, button, button:focus, input, textarea {
             -webkit-tap-highlight-color: transparent;
             box-sizing: inherit;
-            font-family: din-round, sans-serif;
+            font-family: 'MyFont', sans-serif;
             outline: none;
             -webkit-user-select: none;
             -moz-user-select: none;
@@ -800,11 +827,155 @@
             overflow: visible;
         }
         button, input, optgroup, select, textarea {
-            font-family: inherit;
+            font-family: 'MyFont', sans-serif;
             font-size: 100%;
             line-height: 1.15;
             margin: 0;
         }
+
+        .panel-header {
+            padding-bottom: 15px;
+        }
+
+        .league-icon-container {
+            padding-right: 15px;
+            display: flex;
+            align-items: center;
+        }
+
+        .league-icon-container img {
+            width: 500px;
+        }
+
+        .quest-row {
+            display: flex;
+            align-items: center;
+            align-content: center;
+            gap: 25px;
+            margin-bottom: 25px;
+        }
+
+        .quest-info {
+            width: 100%;
+        }
+
+        .quest-icon img {
+            width: 60px;
+        }
+        ._1VUBr { /* User provided */
+            padding: 20px 0;
+        }
+        ._39l1o { /* User provided */
+            align-items: center;
+            display: flex;
+            width: 100%;
+        }
+        ._3d6BP { /* Quest icon on the left */
+            width: 48px; 
+            height: 48px;
+            margin-right: 16px; 
+        }
+        .H8Z2d { /* Container for text and progress bar - User provided */
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+            text-align: left;
+            width: 100%;
+        }
+        .tFxI7 { /* Quest title text - User provided */
+            font-size: 17px; 
+            line-height: 24px;
+            /* color is handled by _1LC6x */
+        }
+        ._1LC6x { /* Modifier for quest title text for boldness and color - User provided */
+            color: rgb(var(--color-eel, 255, 255, 255)); /* Default to white if --color-eel not set */
+            font-size: 19px;
+            font-weight: 700;
+            line-height: 26px;
+        }
+        ._1XsWM { /* Container for progress bar and reward icon - User provided */
+            align-items: center;
+            display: flex;
+            margin-right: 4px;
+            gap: 5px;
+        }
+        .oCRfA { /* Progress bar main container */
+            position: relative;
+            height: var(--__internal__progress-bar-height, 12px);
+            width: 100%;
+            background-color: rgba(var(--color-eel, 255, 255, 255), 0.1);
+            border-radius: 6px;
+            overflow: hidden;
+        }
+        .oCRfA .ThLWu { /* Inner progress bar fill */
+            background-color: rgb(var(--color-bee, 255, 199, 0));
+            height: 100%;
+            width: var(--__internal__progress-bar-value, 0%);
+            position: relative;
+            transition: width 0.3s ease;
+            text-align: center;
+            align-items: center;
+            align-content: center;
+        }
+        .oCRfA ._3a7rM { /* Text inside progress bar (e.g., 5/20) */
+            color: rgba(255, 255, 255, 0.623); /* Or a contrasting color to the bar fill */
+            font-size: 12px;
+            font-weight: bold;
+            z-index: 1; /* Ensure text is above shine elements */
+        }
+        /* Inner shine/gradient elements - will be styled if classes are defined elsewhere or inline */
+        /* .oCRfA ._1jSC8 { } */ /* No specific style provided, structure will be added */
+        /* .oCRfA ._345XU { } */ /* No specific style provided, structure will be added */
+
+        ._3_MbI { /* Reward icon (chest) - User provided */
+            height: 35px;
+            padding-left: 2px; /* Updated from user */
+            width: 35px;
+        }
+
+        .right-sidebar {
+            width: 400px;
+        }
+
+        .left-sidebar nav ul li span {
+            font-size: 15px;
+            text-transform: uppercase;
+        }
+
+        .guidebook-btn {
+            display: flex;
+            gap: 10px;
+            align-items: center;
+        }
+
+        .ninja {
+            position: absolute;;
+    width: 150px;
+    height: 150px;
+    image-rendering: pixelated;
+    image-rendering: crisp-edges;
+    top: 300px;
+    left : 680px;
+}
+
+.ninja {
+            position: absolute;;
+    width: 150px;
+    height: 150px;
+    image-rendering: pixelated;
+    image-rendering: crisp-edges;
+    top: 300px;
+    left : 680px;
+}
+.ninja1 {
+            position: absolute;;
+    width: 150px;
+    height: 150px;
+    image-rendering: pixelated;
+    image-rendering: crisp-edges;
+    top: 600px;
+    right : 680px;
+}
     </style>
 </head>
 <body>
@@ -823,26 +994,26 @@
 
         <main class="center-content">
             <div class="center-header">
-                <div class="center-header-title"><img src="e013fd27fc6bd1d2fea85fe707b615cd.svg"> SECTION <span id="section-num"></span>, UNIT <span id="unit-num"></span> – <span id="lesson-title"></span></div>
-                <button class="guidebook-btn"><span class="guidebook-btn-icon">📖</span> GUIDEBOOK</button>
+                <div class="center-header-title"><img src="e013fd27fc6bd1d2fea85fe707b615cd.svg"> SECTION <span id="section-num"></span>, UNIT <span id="unit-num"></span> – <br><span id="lesson-title" style="padding-top: 50px;color: white;font-size: 25px;"></span></div>
+                <br><br><br>
+                <button class="guidebook-btn"><img alt="Guidebook" class="uGhFr" src="5b531828e59ae83aadb3d88e6b3a98a8.svg"> GUIDEBOOK</button>
             </div>
 
             <div class="level-path" id="level-path-container">
   <div class="PsNCe LJB6r">
     <a class="_3HqVu" href="/sections">
       <h1 class="_3WYpp">SECTION 1, UNIT 1</h1>
-    </a>
+    </a><br>
     <span class="U_xpg">Discuss train travel</span>
     <a data-test="guidebook-button-19" aria-label="Opens Guidebook for this unit" class="_1ORKS _1yhVg _2V6ug _1ursp _7jW2t" href="/guidebook/de/19">
-      <img alt="Guidebook" class="uGhFr" src="path/icons/guidebook.svg">
+      <img alt="Guidebook" class="uGhFr" src="5b531828e59ae83aadb3d88e6b3a98a8.svg">
       <span class="_30k3d">Guidebook</span>
     </a>
   </div>
-  <div class="_2QaYj">
+  <div class="_2QaYj"> {/* The character image container and where dynamic buttons will be appended */}
     <div class="_3jOjF" style="height: 264px; left: calc(50% - 5px); top: 233px; transform: translateY(-50%); width: calc(50% - 11px);">
       <img alt="" class="_1bppN" src="pathCharacters/active/character.svg">
     </div>
-    <div class="R7x3_ _8Iu6E" style="left: 0; margin-top: 24px;"><div class="HPdUG fF_qH"><div class="_2t1Sd Fw74a"><button class="_1gEmM _7jW2t _1333i _22TV_ _3Jm09"><span class="_1kZ3q _2NI9y _1IwKR"><svg>...</svg></span><img class="_1B6UH" src="icons/level0.svg"></button></div></div></div>
   </div>
 </div>
         </main>
@@ -851,7 +1022,7 @@
             <div class="stats-bar sidebar-panel" id="stats-bar-container">
             </div>
 
-            <div class="super-callout" id="super-promo-container">
+            <div class="super-callout sidebar-panel" id="super-promo-container">
                  <img height="20.620689655172413" src="2e50c3e8358914df5285dc8cf45d0b4c.svg" width="78" alt="Super Logo">
                  <h3>Level up with Super</h3>
                  <p>No ads, personalized practice, and unlimited Legendary!</p>
@@ -865,12 +1036,14 @@
             </div>
         </aside>
     </div>
+    <img class="ninja" src="nin/Actor/Characters/KnightGold/SeparateAnim/Item.png">
+    <img class="ninja1" src="nin/Actor/Characters/KnightGold/SeparateAnim/Special1.png">
 
     <script>
         const initialJsonData = {
-            "section": 2,
-            "unit": 10,
-            "title": "Discuss train travel",
+            "section": 1,
+            "unit": 1,
+            "title": "Learning the basics",
             "navItems": [
                 { "id": "learn", "label": "Learn", "iconUrl": "784035717e2ff1d448c0f6cc4efc89fb.svg", "active": true },
                 { "id": "practice", "label": "Practice", "iconUrl": "5187f6694476a769d4a4e28149867e3e.svg" },
@@ -881,14 +1054,48 @@
                 { "id": "more", "label": "More", "iconUrl": "7159c0b5d4250a5aea4f396d53f17f0c.svg" }
             ],
             "levels": [
-                { "type": "lesson", "status": "completed", "name": "Variables Intro" },
-                { "type": "start", "status": "unlocked", "name": "Unit Overview" },
-                { "type": "lesson", "status": "current", "name": "Loops & Logic" },
-                { "type": "challenge", "status": "locked", "name": "Algorithm Challenge" },
-                { "type": "lesson", "status": "locked", "name": "Functions Deep Dive" },
-                { "type": "lesson", "status": "locked", "name": "New Lesson A", "iconUrl": "7aa61c3f60bd961a60a46fb36e76c72f.svg" },
-                { "type": "lesson", "status": "locked", "name": "New Lesson B", "iconUrl": "bfa591f6854b4de08e1656b3e8ca084f.svg" },
-                { "type": "milestone", "status": "locked", "name": "Unit 2 Completion" }
+                { "type": "lesson", "status": "completed", "name": "Variables Intro",
+                    "customPosition": { 
+                        "top": "50px", 
+                        "left": "calc(50% - 35px + 0px)",
+                        "transform": "translateX(-30px)" 
+                    }  },
+                { "type": "start", "status": "unlocked", "name": "Unit Overview",
+                    "customPosition": { 
+                        "top": "130px", 
+                        "left": "calc(50% - 35px + 0px)",
+                        "transform": "translateX(50px)" 
+                    }  },
+                { "type": "lesson", "status": "current", "name": "Loops & Logic",
+                    "customPosition": { 
+                        "top": "230px", 
+                        "left": "calc(50% - 35px + 0px)",
+                        "transform": "translateX(90px)" 
+                    }  },
+                { "type": "challenge", "status": "locked", "name": "Algorithm Challenge",
+                    "customPosition": { 
+                        "top": "330px", 
+                        "left": "calc(50% - 35px + 0px)",
+                        "transform": "translateX(50px)" 
+                    }  },
+                { "type": "lesson", "status": "locked", "name": "Functions Deep Dive",
+                    "customPosition": { 
+                        "top": "410px", 
+                        "left": "calc(50% - 35px + 0px)",
+                        "transform": "translateX(-20px)" 
+                    }  },
+                { "type": "lesson", "status": "locked", "name": "New Lesson A", "iconUrl": "7aa61c3f60bd961a60a46fb36e76c72f.svg",
+                    "customPosition": { 
+                        "top": "500px", 
+                        "left": "calc(50% - 35px + 0px)",
+                        "transform": "translateX(-80px)" 
+                    }  },
+                { "type": "lesson", "status": "locked", "name": "New Lesson B", "iconUrl": "5e4203031e39fc43d94371565fd0d369.svg",
+                    "customPosition": { 
+                        "top": "600px", 
+                        "left": "calc(50% - 35px + 0px)",
+                        "transform": "translateX(-100px)" 
+                    }  }
             ],
             "stats": {
                 "locale": { "text": "DE", "iconUrl": "javaa.png" },
@@ -941,7 +1148,8 @@
             const statsBarContainer = document.getElementById('stats-bar-container');
             statsBarContainer.innerHTML = `
                 <div class="stat-item">
-                    <img src="javaa.png" class="stat-flag-img" style="width: 35px; height: 35px;" alt="Language Logo">
+                    <img src="javaa.png" class="stat-flag-img" style="height: 35px;" alt="Language Logo">
+                    <span class="stat-text">15</span>
                 </div>
                 <div class="stat-item">
                     <img src="${data.stats.streak.iconUrl}" class="stat-icon-img" alt="Streak icon">
@@ -968,10 +1176,12 @@
                 challenge: '7ebf5ec1643d186b7edb283966329b2f.svg',
             };
 
+            // Updated for smoother zigzag turns using a sine wave pattern
+            // const translateXValues = [0, 106, 150, 106, 0, -106, -150, -106]; // REMOVED - Replaced by customPosition
+
             const baseTopMargin = 60; // px, initial top offset from parent
             const verticalSpacing = 100; // px, vertical distance between button centers
-            const horizontalSpread = 120; // px, horizontal distance from center for zigzag peak (e.g., center to left peak)
-            const buttonWidth = 70; // px, approx width of the button for centering
+            const buttonWidth = 70; // px, approx width of the button (still used for requiredHeight calculation)
             const buttonHeight = 70; // px, approx height for container calculation
 
             // Dynamically set height of the container to fit all buttons
@@ -985,13 +1195,26 @@
             data.levels.forEach((level, index) => {
                 const lessonNodeWrapper = document.createElement('div');
                 lessonNodeWrapper.className = 'R7x3_ _8Iu6E'; 
+                lessonNodeWrapper.style.position = 'absolute';
+
+                // Set top position: use custom if provided, else calculate based on index
+                if (level.customPosition && typeof level.customPosition.top !== 'undefined') {
+                    lessonNodeWrapper.style.top = level.customPosition.top;
+                } else {
+                    lessonNodeWrapper.style.top = (baseTopMargin + index * verticalSpacing) + 'px';
+                }
                 
-                lessonNodeWrapper.style.position = 'absolute'; 
-                lessonNodeWrapper.style.top = (baseTopMargin + index * verticalSpacing) + 'px';
+                // Set left position: use custom if provided
+                if (level.customPosition && typeof level.customPosition.left !== 'undefined') {
+                    lessonNodeWrapper.style.left = level.customPosition.left;
+                } 
+                // ELSE: The old calc() logic for left is removed. It will rely on CSS or browser default if not provided.
                 
-                const sideOffset = (index % 2 === 0 ? -1 : 1) * horizontalSpread;
-                lessonNodeWrapper.style.left = `calc(50% + ${sideOffset}px)`;
-                lessonNodeWrapper.style.transform = `translateX(-${buttonWidth / 2}px)`; // Center the button at the calculated left point
+                // Set transform: use custom if provided
+                if (level.customPosition && typeof level.customPosition.transform !== 'undefined') {
+                    lessonNodeWrapper.style.transform = level.customPosition.transform;
+                }
+                // ELSE: The old translateX logic is removed. It will rely on CSS or browser default if not provided.
 
                 if (level.type === 'milestone') {
                     const chestButton = document.createElement('button');
@@ -1000,7 +1223,7 @@
                     if (level.status === 'locked') {
                         chestButton.disabled = true;
                     }
-                    chestButton.innerHTML = `<span class="_9lHjd"><img class="TI9Is" draggable="false" src="https://d35aaqx5ub95lt.cloudfront.net/images/path/0ae912c0b7a66354a850e6733ef653cb.svg"></span>`;
+                    chestButton.innerHTML = `<span class="_9lHjd"><img class="TI9Is" draggable="false" src="5e4203031e39fc43d94371565fd0d369.svg"></span>`;
                     chestButton.onclick = () => {
                         if (level.status !== 'locked') alert('Clicked on: ' + level.name);
                     };
@@ -1066,8 +1289,9 @@
                     </div>
                     <div class="league-details">
                         <p class="league-subtext">
-                            You’re ranked <span>#${data.league.rank}</span><br>
-                            <span style="color: ${data.league.inDanger ? '#E74C3C' : 'var(--accent-green)'}; font-weight: bold;">
+                            <span style="font-weight: 700;margin-bottom: 15px;">You’re ranked </span><span style="color: #ee5555; font-weight: 700;">#${data.league.rank}</span><br>
+                            <br>
+                            <span style="padding-top: 15px;">
                                 ${data.league.inDanger ? 'You moved down to the demotion zone!' : "You\'re in a good position!"}
                             </span>
                         </p>
@@ -1086,64 +1310,95 @@
             `;
             questsContainer.appendChild(questsHeader);
 
-            const questsList = document.createElement('div');
-            questsList.className = 'quests-list';
+            const questsList = document.createElement('div'); // Create a container for the list
+            questsList.className = 'quests-list-area'; 
+            
             data.quests.forEach(quest => {
-                const questRow = document.createElement('div');
-                questRow.className = 'quest-row';
-                if (!quest.unlocked) {
-                    questRow.style.opacity = '0.6';
-                    questRow.style.pointerEvents = 'none';
-                } else {
-                    questRow.onclick = () => alert('Quest clicked: ' + quest.text + '. Show details + Go Practice CTA.'); // Corrected alert
-                }
+                // if (!quest.unlocked && false) return; // Kept for debugging if needed
 
-                const questIcon = document.createElement('img');
-                questIcon.src = quest.iconUrl;
-                questIcon.alt = "quest icon";
-                questIcon.className = 'quest-icon';
-                questIcon.style.width = '24px'; questIcon.style.height='24px';
+                const questItemContainer = document.createElement('div');
+                questItemContainer.className = '_1VUBr _39l1o'; // As per user HTML
 
+                const questIconImg = document.createElement('img');
+                questIconImg.className = '_3d6BP'; // As per user HTML
+                questIconImg.src = quest.iconUrl || 'icons/default_quest.svg'; 
+                questIconImg.alt = 'Quest icon';
 
-                const questInfo = document.createElement('div');
-                questInfo.className = 'quest-info';
+                const questDetailsDiv = document.createElement('div');
+                // _3KsFs is a common class in Duolingo, H8Z2d is specific.
+                // User HTML shows them together.
+                questDetailsDiv.className = '_3KsFs H8Z2d'; 
+
+                const questTextSpan = document.createElement('span');
+                questTextSpan.className = 'tFxI7 _1LC6x'; // As per user HTML
+                questTextSpan.textContent = quest.text;
+
+                const progressAndRewardDiv = document.createElement('div');
+                progressAndRewardDiv.className = '_1XsWM'; // As per user HTML
+
+                const progressBarDiv = document.createElement('div');
+                progressBarDiv.className = 'oCRfA _2nasW'; // As per user HTML
+                progressBarDiv.setAttribute('role', 'progressbar');
+                progressBarDiv.setAttribute('aria-valuemin', '0');
+                progressBarDiv.setAttribute('aria-valuemax', String(quest.progressMax));
+                progressBarDiv.setAttribute('aria-valuenow', String(quest.progressCurrent));
                 
-                const questText = document.createElement('div');
-                questText.className = 'quest-text';
-                questText.textContent = quest.text;
-
-                const progressBarContainer = document.createElement('div');
-                progressBarContainer.className = 'progress-bar-container';
-                
-                const progressBar = document.createElement('div');
-                progressBar.className = 'progress-bar';
                 const percentage = (quest.progressCurrent / quest.progressMax) * 100;
-                progressBar.style.width = percentage + '%';
-
-                const progressBarText = document.createElement('span');
-                progressBarText.className = 'progress-bar-text';
-                if (percentage === 100) {
-                    progressBarText.innerHTML = `<img src="${quest.completedIconUrl}" alt="completed" style="height: 16px;">`;
-                } else {
-                    progressBarText.textContent = `${quest.progressCurrent}/${quest.progressMax}`; // Corrected backslashes
-                }
-                progressBar.appendChild(progressBarText);
                 
-                progressBarContainer.appendChild(progressBar);
-                questInfo.appendChild(questText);
-                questInfo.appendChild(progressBarContainer);
+                progressBarDiv.style.setProperty('--web-ui_progress-bar-color', 'rgb(var(--color-bee, 255, 199, 0))');
+                progressBarDiv.style.setProperty('--web-ui_progress-bar-shine-height', '3px');
+                progressBarDiv.style.setProperty('--__internal__progress-bar-height', '18px');
+                progressBarDiv.style.setProperty('--__internal__progress-bar-inner-value', '0%'); // From user example
+                progressBarDiv.style.setProperty('--__internal__progress-bar-value', `${Math.min(percentage, 100)}%`);
 
-                questRow.appendChild(questIcon);
-                questRow.appendChild(questInfo);
+                const progressBarInnerContent = document.createElement('div');
+                progressBarInnerContent.className = 'ThLWu _3yKMC'; // As per user HTML
 
+                // Inner HTML for progress bar, matching user's structure
+                progressBarInnerContent.innerHTML = `
+                    <span class="_3a7rM _2spfn _2G_th">${quest.progressCurrent} / ${quest.progressMax}</span>
+                    <div class="_1jSC8 _27NV6" style="opacity: 1;">
+                        <div class="_3jkB9 _1qzJe _27NV6"></div>
+                        <div class="_1EFTr"></div>
+                        <span class="_2spfn _2G_th">${quest.progressCurrent} / ${quest.progressMax}</span>
+                    </div>
+                    <div class="_345XU" style="opacity: 1;">
+                        <div class="BR3lm"></div>
+                    </div>
+                `;
+                progressBarDiv.appendChild(progressBarInnerContent);
+
+                const rewardIconImg = document.createElement('img');
+                rewardIconImg.className = '_3_MbI'; // As per user HTML
+                rewardIconImg.src = quest.rewardIconUrl || quest.completedIconUrl || 'icons/default_reward.svg'; 
+                rewardIconImg.alt = 'Reward';
+
+                // Assemble the quest item
+                progressAndRewardDiv.appendChild(progressBarDiv);
+                progressAndRewardDiv.appendChild(rewardIconImg);
+
+                questDetailsDiv.appendChild(questTextSpan);
+                questDetailsDiv.appendChild(progressAndRewardDiv);
+
+                questItemContainer.appendChild(questIconImg);
+                questItemContainer.appendChild(questDetailsDiv);
+                
                 if (!quest.unlocked) {
+                    questItemContainer.style.opacity = '0.6';
+                    questItemContainer.style.pointerEvents = 'none';
                     const lockedBadge = document.createElement('span');
-                    lockedBadge.className = 'quest-locked-badge';
-                    lockedBadge.innerHTML = '<img src="https://d35aaqx5ub95lt.cloudfront.net/images/goals/ca23da57929a3144934ee0571a2f44e9.svg" alt="locked" style="width: 20px; height: 20px;">'; // Lock icon from dsdsds.txt (example)
-                    questRow.appendChild(lockedBadge);
+                    lockedBadge.className = 'quest-locked-badge'; 
+                    lockedBadge.innerHTML = '<img src="https://d35aaqx5ub95lt.cloudfront.net/images/goals/ca23da57929a3144934ee0571a2f44e9.svg" alt="locked" style="width: 20px; height: 20px; margin-left: auto;">';
+                    // The locked badge might need to be positioned differently with the new structure.
+                    // For now, appending it directly. Consider if it should be inside H8Z2d or _1XsWM.
+                    // Based on typical layouts, it might be better alongside _3_MbI or outside _1XsWM.
+                    // For simplicity, keeping current append logic, but this might need review.
+                    questDetailsDiv.appendChild(lockedBadge); // Appending to details, might be better
+                } else {
+                    questItemContainer.onclick = () => alert('Quest clicked: ' + quest.text);
                 }
-                
-                questsList.appendChild(questRow);
+
+                questsList.appendChild(questItemContainer);
             });
             questsContainer.appendChild(questsList);
         }

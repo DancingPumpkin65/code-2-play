@@ -5,14 +5,59 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>game interface test</title>
     <link rel="stylesheet" href="style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800&display=swap" rel="stylesheet"> <!-- Added font link -->
 </head>
 <body>
-    <canvas id="gameCanvas"></canvas> <br>
-    <div id="controls">
-        <button id="btn-up">▲</button>
-        <button id="btn-left">◄</button>
-        <button id="btn-down">▼</button>
-        <button id="btn-right">►</button>
+    <div class="game-container"> <!-- Added a wrapper for layout -->
+        <aside class="left-sidebar">
+            <div class="_3vxyy">
+                <a class="_3qEOY" href="#" aria-current="page"> <!-- Simplified link -->
+                    <img class="sOuBs" src="logoo.png" alt="Logo">
+                </a>
+            </div>
+            <nav>
+                <ul id="nav-list">
+                    <!-- Nav items will be dynamically added or can be hardcoded here if static -->
+                    <li class="nav-item active learn-active">
+                        <img src="784035717e2ff1d448c0f6cc4efc89fb.svg" alt="Learn" class="nav-item-icon-img">
+                        <span class="nav-item-label">LEARN</span>
+                    </li>
+                    <li class="nav-item">
+                        <img src="5187f6694476a769d4a4e28149867e3e.svg" alt="Practice" class="nav-item-icon-img">
+                        <span class="nav-item-label">PRACTICE</span>
+                    </li>
+                    <li class="nav-item">
+                        <img src="ca9178510134b4b0893dbac30b6670aa.svg" alt="Leaderboard" class="nav-item-icon-img">
+                        <span class="nav-item-label">LEADERBOARD</span>
+                    </li>
+                    <li class="nav-item">
+                        <img src="ca23da57929a3144934ee0571a2f44e9.svg" alt="Quests" class="nav-item-icon-img">
+                        <span class="nav-item-label">QUESTS</span>
+                    </li>
+                    <li class="nav-item">
+                        <img src="0e58a94dda219766d98c7796b910beee.svg" alt="Shop" class="nav-item-icon-img">
+                        <span class="nav-item-label">SHOP</span>
+                    </li>
+                    <li class="nav-item">
+                        <img src="medium.png" alt="Profile" class="nav-item-icon-img">
+                        <span class="nav-item-label">PROFILE</span>
+                    </li>
+                     <li class="nav-item">
+                        <img src="7159c0b5d4250a5aea4f396d53f17f0c.svg" alt="More" class="nav-item-icon-img">
+                        <span class="nav-item-label">MORE</span>
+                    </li>
+                </ul>
+            </nav>
+        </aside>
+        <main class="game-content"> <!-- Added a main content area -->
+            <canvas id="gameCanvas"></canvas> <br>
+            <div id="controls" class="buttons">
+                <button id="btn-up" class="btn">↑</button>
+                <button id="btn-left" class="btn">←</button>
+                <button id="btn-down" class="btn">↓</button>
+                <button id="btn-right" class="btn">→</button>
+            </div>
+        </main>
     </div>
     <script src="game.js"></script>
 </body>

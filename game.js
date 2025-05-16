@@ -2,14 +2,15 @@
 // We will populate this with game logic in the next steps.
 console.log("Game.js loaded. Ninja Adventure awaits!");
 
+let gameLoopStarted = false; // Moved declaration to the top to avoid TDZ error
+
 const canvas = document.getElementById('gameCanvas');
 const ctx = canvas.getContext('2d');
 const scoreDisplay = document.getElementById('score');
 
-// Game settings
-const gridCols = 15, gridRows = 15, gridSize = 50;
-canvas.width = gridCols * gridSize;
-canvas.height = gridRows * gridSize;
+// Game settings - these will be adjusted based on screen size
+let gridCols, gridRows;
+const gridSize = 50; // Assuming gridSize remains constant for now
 let score = 0;
 
 // Asset paths (relative to index.html)
@@ -23,14 +24,14 @@ const appleImage = new Image();
 appleImage.src = appleImagePath;
 // Map background image
 const mapImage = new Image();
-mapImage.src = 'map1.png';
+// mapImage.src will be set dynamically
 // Walk and idle sprite sheets
 const walkSheet = new Image();
 walkSheet.src = 'nin/Actor/Characters/KnightGold/SeparateAnim/Walk.png';
 const idleSheet = new Image();
 idleSheet.src = 'nin/Actor/Characters/KnightGold/SeparateAnim/Idle.png';
-// Game item: CPU position on grid
-const cpuStart = { col: 2, row: 9 }; // specify CPU tile coordinates
+// Game item: CPU position on grid - this might need to be dynamic too if maps are very different
+let cpuStart = { col: 1, row: 7 }; // Default for map2
 const apple = { x: 0, y: 0, width: gridSize, height: gridSize };
 
 // flag to track CPU collection
@@ -65,6 +66,51 @@ let imagesLoaded = 0;
 // Count each image loadable (including new knightFacesetImage)
 const totalImages = 13; // ninjaImage, appleImage, mapImage, walkSheet, idleSheet, facesetBox, dialogueBox, dialogFacesetImage, yesButtonImage, knightFacesetImage, dialogInfoImage, itemImage, deadImage
 
+// Function to check if on mobile view
+function isMobileView() {
+    return window.innerWidth <= 768;
+}
+
+// Function to setup game based on screen size
+function setupGameForScreenSize() {
+    if (isMobileView()) {
+        gridCols = 11;
+        gridRows = 14;
+        mapImage.src = 'map2.png';
+        cpuStart = { col: 1, row: 7 }; // Position for map2 (11x14)
+        console.log("Mobile view: Using map2.png (11x14)");
+    } else {
+        gridCols = 15; // Assuming map1.png is for a 15x15 grid
+        gridRows = 15;
+        mapImage.src = 'map1.png';
+        cpuStart = { col: 2, row: 9 }; // Example position for map1 (15x15)
+        console.log("Desktop view: Using map1.png (15x15)");
+    }
+    canvas.width = gridCols * gridSize;
+    canvas.height = gridRows * gridSize;
+
+    // Populate/Re-populate movementLimits based on the new grid dimensions
+    // This must happen regardless of whether 'player' exists yet.
+    movementLimits.length = 0; // Clear existing limits
+    for (let i = 0; i < gridRows; i++) {
+        movementLimits.push(Array(gridCols).fill(1));
+    }
+
+    // Update player position if player already exists
+    if (player) { 
+        player.x = Math.floor(gridCols / 2) * gridSize;
+        player.y = Math.floor(gridRows / 2) * gridSize;
+        player.targetX = player.x;
+        player.targetY = player.y;
+        // Note: applyCollisionBlocks() will be called by the calling context (initial setup or resize handler)
+        // after movementLimits is guaranteed to be set up.
+    }
+    
+    // Update apple position (apple is global, should always exist after declaration)
+    apple.x = cpuStart.col * gridSize;
+    apple.y = cpuStart.row * gridSize;
+}
+
 function onImageLoad() {
     imagesLoaded++;
     if (imagesLoaded === totalImages) {
@@ -86,14 +132,17 @@ function onImageLoad() {
         scale = gridSize / frameWidth;
         // force single-frame player sprite
         idleFrameCount = 1;
-        // center player on grid
+        // Player and apple positions are now set in setupGameForScreenSize or after images load
         player.x = Math.floor(gridCols / 2) * gridSize;
         player.y = Math.floor(gridRows / 2) * gridSize;
-        // place CPU at specified position
         apple.x = cpuStart.col * gridSize;
         apple.y = cpuStart.row * gridSize;
+
         console.log(`Animation frames: ${idleFrameCount}, frame size: ${frameWidth}x${frameHeight}, horizontal: ${isHorizontal}`);
-        gameLoop(); // Start the game loop only after images are loaded and frames determined
+        if (!gameLoopStarted) { // Ensure gameLoop is started only once
+            gameLoop();
+            gameLoopStarted = true;
+        }
     }
 }
 
@@ -248,30 +297,44 @@ class Player {
     }
 }
 
-// instantiate player at center
-const player = new Player(Math.floor(gridCols/2)*gridSize, Math.floor(gridRows/2)*gridSize, gridSize);
+// instantiate player at center - player instance will be created after setupGameForScreenSize
+let player; // Declare player here, instantiate after grid is set
 
 // Movement limits: 2D array specifying passable cells (1) and blocked cells (0)
-const movementLimits = [
-    // each sub-array is a row of gridCols length; 1=passable, 0=blocked
-    // fill with 1s by default; update specific cells to 0 to block
-    ...Array(gridRows).fill().map(() => Array(gridCols).fill(1))
-];
+const movementLimits = []; // Initialize as empty, will be populated by setupGameForScreenSize
+
 // --- Custom collision blocks ---
 // Define coordinates (col,row) of tiles to block
-const collisionBlocks = [
-    {col: 3, row: 5},
-    {col: 4, row: 5},
-    {col: 5, row: 5},
-    {col: 6, row: 5},
-    {col: 7, row: 5}
-];
-// Apply blocks
-collisionBlocks.forEach(({col,row}) => {
-    if (row >= 0 && row < gridRows && col >= 0 && col < gridCols) {
-        movementLimits[row][col] = 0;
+// This needs to be conditional based on the map
+let collisionBlocks = [];
+
+function applyCollisionBlocks() {
+    movementLimits.forEach(row => row.fill(1)); // Reset to passable
+    if (isMobileView()) {
+        // Collision blocks for map2.png (11x14)
+        collisionBlocks = [
+            {col: 2, row: 3},
+            {col: 3, row: 3},
+            {col: 8, row: 10},
+            {col: 9, row: 10}
+        ];
+    } else {
+        // Collision blocks for map1.png (15x15) - ADAPT THESE TO YOUR MAP1
+        collisionBlocks = [
+            {col: 3, row: 5},
+            {col: 4, row: 5},
+            {col: 5, row: 5},
+            {col: 6, row: 5},
+            {col: 7, row: 5}
+            // Add more blocks for map1 as needed
+        ];
     }
-});
+    collisionBlocks.forEach(({col,row}) => {
+        if (row >= 0 && row < gridRows && col >= 0 && col < gridCols) {
+            movementLimits[row][col] = 0;
+        }
+    });
+}
 
 // --- Draw functions ---
 function drawPlayer() {
@@ -330,7 +393,7 @@ function update() {
 
 // Dialog state
 let showDialog = true;
-let dialogText = 'Mission: Collect the CPU!';
+let dialogText = 'Find the CPU!'; // Adjusted initial dialog text
 // rectangle to track YesButton position
 let yesButtonRect = { x: 0, y: 0, width: 0, height: 0 };
 
@@ -353,35 +416,47 @@ function gameLoop() {
 
     // show initial dialog using combined layout dimensions
     if (showDialog && dialogueBoxImage.complete && facesetBoxImage.complete && knightFacesetImage.complete && yesButtonImage.complete) {
-        const combW = canvas.width * 0.8;
+        const dialogWidthScale = 0.9; // Make dialog slightly narrower for smaller screens
+        const combW = canvas.width * dialogWidthScale;
         const combScale = combW / dialogFacesetImage.naturalWidth;
         const combH = dialogFacesetImage.naturalHeight * combScale;
         const combX = (canvas.width - combW) / 2;
-        const combY = canvas.height - combH - 20;
+        const combY = canvas.height - combH - 10; // Position closer to bottom
+
         // draw combined background under FacesetBox and DialogueBoxSimple
         ctx.drawImage(dialogFacesetImage, combX, combY, combW, combH);
+        
         // Faceset box on left
-        const fsW = 48 * combScale;
-        const fsH = 48 * combScale;
-        const fsX = combX;
-        const fsY = combY + (combH - fsH);
+        const facesetScaleFactor = 0.8; // Scale down faceset and text
+        const fsW = 48 * combScale * facesetScaleFactor;
+        const fsH = 48 * combScale * facesetScaleFactor;
+        const fsX = combX + 5 * combScale; // Add some padding
+        const fsY = combY + (combH - fsH) / 2; // Center vertically in its part of dialog
         ctx.drawImage(facesetBoxImage, fsX, fsY, fsW, fsH);
-        ctx.drawImage(knightFacesetImage, fsX + 5 * combScale, fsY + 5 * combScale, fsW - 10 * combScale, fsH - 10 * combScale);
+        ctx.drawImage(knightFacesetImage, fsX + 3 * combScale, fsY + 3 * combScale, fsW - 6 * combScale, fsH - 6 * combScale);
+        
         // Dialogue box on right
-        const dlgW = 250 * combScale;
-        const dlgH = 48 * combScale;
-        const dlgX = combX + fsW;
-        const dlgY = combY + (combH - dlgH);
+        const dlgW = (dialogFacesetImage.naturalWidth - 48 - 10) * combScale * facesetScaleFactor; // Adjust width based on faceset and padding
+        const dlgH = 48 * combScale * facesetScaleFactor;
+        const dlgX = fsX + fsW + 5 * combScale; // Position next to faceset with padding
+        const dlgY = combY + (combH - dlgH) / 2; // Center vertically
         ctx.drawImage(dialogueBoxImage, dlgX, dlgY, dlgW, dlgH);
+        
         // overlay text
-        ctx.font = `${15 * combScale}px sans-serif`;
-        ctx.fillStyle = '#fffffff';
-        ctx.fillText(dialogText, dlgX + 10 * combScale, dlgY + dlgH / 2);
+        const fontSize = Math.max(10, 12 * combScale * facesetScaleFactor); // Make font smaller, ensure min size
+        ctx.font = `${fontSize}px 'MyFont', sans-serif`; // Use custom font
+        ctx.fillStyle = '#333333'; // Darker text for better readability on light dialog
+        // Attempt to center text vertically
+        const textMetrics = ctx.measureText(dialogText);
+        const textY = dlgY + (dlgH / 2) + (textMetrics.actualBoundingBoxAscent + textMetrics.actualBoundingBoxDescent) / 4;
+        ctx.fillText(dialogText, dlgX + 8 * combScale, textY);
+        
         // Yes button
-        const btnW = combW * 0.1;
-        const btnH = yesButtonImage.naturalHeight * (btnW / yesButtonImage.naturalWidth);
-        const btnX = combX + combW - btnW - 10 * combScale;
-        const btnY = combY + combH - btnH - 10 * combScale;
+        const btnScaleFactor = 0.7; // Make button smaller
+        const btnW = yesButtonImage.naturalWidth * combScale * btnScaleFactor;
+        const btnH = yesButtonImage.naturalHeight * combScale * btnScaleFactor;
+        const btnX = combX + combW - btnW - 8 * combScale; // Position to the right
+        const btnY = combY + (combH - btnH) / 2; // Center vertically
         ctx.drawImage(yesButtonImage, btnX, btnY, btnW, btnH);
         yesButtonRect = { x: btnX, y: btnY, width: btnW, height: btnH };
     }
@@ -441,13 +516,65 @@ document.addEventListener('keydown', keyDown);
 
 // --- UI button controls ---
 function setupUIControls() {
-    document.getElementById('btn-up').addEventListener('click', () => player.move(0, -1));
-    document.getElementById('btn-down').addEventListener('click', () => player.move(0, 1));
-    document.getElementById('btn-left').addEventListener('click', () => player.move(-1, 0));
-    document.getElementById('btn-right').addEventListener('click', () => player.move(1, 0));
+    document.getElementById('btn-up').addEventListener('click', () => {
+        player.move(0, -1);
+        pressButton('btn-up');
+    });
+    document.getElementById('btn-down').addEventListener('click', () => {
+        player.move(0, 1);
+        pressButton('btn-down');
+    });
+    document.getElementById('btn-left').addEventListener('click', () => {
+        player.move(-1, 0);
+        pressButton('btn-left');
+    });
+    document.getElementById('btn-right').addEventListener('click', () => {
+        player.move(1, 0);
+        pressButton('btn-right');
+    });
 }
 
 setupUIControls();
+
+const directionClasses = {
+    "btn-up": "press-up",
+    "btn-down": "press-down",
+    "btn-left": "press-left",
+    "btn-right": "press-right"
+};
+
+const keyMap = {
+    ArrowUp: "btn-up",
+    ArrowDown: "btn-down",
+    ArrowLeft: "btn-left",
+    ArrowRight: "btn-right",
+    KeyW: "btn-up",
+    KeyS: "btn-down",
+    KeyA: "btn-left",
+    KeyD: "btn-right"
+};
+
+function pressButton(btnId) {
+    const btn = document.getElementById(btnId);
+    if (!btn) return;
+
+    const cls = directionClasses[btnId];
+    if (cls) { // Check if class exists for the button
+        btn.classList.add(cls);
+        setTimeout(() => {
+            btn.classList.remove(cls);
+        }, 150);
+    }
+}
+
+document.addEventListener("keydown", e => {
+    const btnId = keyMap[e.code];
+    if (btnId) {
+        // Simulate button click for game logic
+        const btn = document.getElementById(btnId);
+        if(btn) btn.click(); // This will also trigger the pressButton via the click listener
+    }
+});
 
 // hide dialog on YesButton click
 canvas.addEventListener('click', function(e) {
@@ -462,6 +589,26 @@ canvas.addEventListener('click', function(e) {
     }
 });
 
+// Initial setup based on screen size
+setupGameForScreenSize();
+player = new Player(Math.floor(gridCols/2)*gridSize, Math.floor(gridRows/2)*gridSize, gridSize);
+applyCollisionBlocks(); // Apply initial collision blocks
+
+// Event listener for window resize to adjust game
+window.addEventListener('resize', () => {
+    // Potentially add a debounce function here to limit rapid firing
+    console.log("Window resized");
+    imagesLoaded = 0; // Reset image loaded count to allow re-triggering of onImageLoad for the new map
+    setupGameForScreenSize();
+    // The mapImage.onload will re-trigger onImageLoad if src changes, which then calls gameLoop
+    // Ensure player is re-instantiated or correctly updated if necessary
+    if (!player) { // If player was not created due to images not loading before first resize
+        player = new Player(Math.floor(gridCols/2)*gridSize, Math.floor(gridRows/2)*gridSize, gridSize);
+    }
+    applyCollisionBlocks();
+    // No need to call gameLoop() here directly, it's handled by onImageLoad
+});
+
 // Initial message to confirm script is running
 console.log("Ninja Apple Collector game script initialized.");
 // Note: gameLoop will be started by onImageLoad once images are ready.
@@ -469,9 +616,9 @@ console.log("Ninja Apple Collector game script initialized.");
 // If there's an issue with image loading, the gameLoop won't start.
 
 // Fallback if images don't load for some reason after a timeout (e.g. path errors not caught by onerror)
-let gameLoopStarted = false; // Declare gameLoopStarted here
+// let gameLoopStarted = false; // Declaration moved to the top
 setTimeout(() => {
-    if (imagesLoaded !== totalImages) {
+    if (imagesLoaded !== totalImages && !gameLoopStarted) { // Check !gameLoopStarted as well
         console.warn("Images did not load within timeout. Attempting to start game with placeholders.");
         if(imagesLoaded < totalImages && !ninjaImage.onerror && !appleImage.onerror){ // if no error was explicitly caught
              alert("Game assets might be missing or paths incorrect. The game will try to run with placeholders. Check console (F12) for errors.");
