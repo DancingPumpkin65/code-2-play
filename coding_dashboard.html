@@ -54,8 +54,7 @@
             padding: calc(var(--spacing-unit) * 2) calc(var(--spacing-unit) * 4);
         }
         ._3qEOY img.sOuBs { /* Main logo part */
-            height: 29px; /* From Duolingo's CSS for their logo */
-            width: auto;
+            width: 150px;
         }
          ._3qEOY img._1C091 { /* Smaller logo part, if needed */
             display: none; /* Hide if not used or style as per Duolingo */
@@ -325,16 +324,21 @@
         }
         
         .mascot {
-            width: 60px; 
-            height: 60px;
-            font-size: 45px; 
+            width: 120px; 
+            height: 120px;
+            font-size: 35px; 
             display: flex;
             justify-content: center;
             align-items: center;
             position: absolute;
             left: 100%; /* Position to the right of the icon */
             top: 50%;
-            transform: translate(15px, -50%); /* Adjust spacing */
+            transform: translate(10px, -50%); /* Adjust spacing */
+        }
+        .mascot img {
+            width: 100%;
+            height: auto;
+            image-rendering: pixelated;
         }
 
 
@@ -643,61 +647,221 @@
             .quest-icon { font-size: 16px; }
         }
 
+        /* Add styling for static zigzag path */
+        .level-path { position: relative; width: 100%; height: 350px; /* adjust to fit content */ overflow: hidden; }
+        ._2QaYj { position: absolute; width: 100%; height: 100%; top: 0; left: 0; }
+        /* Container for character image in path background */
+        ._3jOjF { position: absolute; z-index: 0; }
+        ._1bppN { width: 100%; height: auto; }
+        /* Button wrapper and hover/active effects */
+        .HPdUG { 
+            display: inline-block; 
+            cursor: pointer; 
+            transform: rotateX(30deg); /* Added 3D perspective */
+            perspective: 1000px; /* Add perspective for a better 3D effect */
+        }
+        .HPdUG ._1gEmM {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background-color: var(--panel-bg); /* Overridden by _1gEmM's background:none */
+            border-radius: 50%; /* Shape is from SVG, not this */
+            /* transition: transform 0.1s ease, background-color 0.2s ease; /* REMOVED - Handled by ._1gEmM below */
+        }
+        .HPdUG:hover ._1gEmM {
+            /* background-color: var(--accent-green); /* Still ineffective due to _1gEmM's background:none */
+            transform: translateY(2px); /* Pressed down by 2px from default */
+            box-shadow: 0 6px 0px #46a900,  /* Thicker shadow: 8px (default) - 2px (translateY) = 6px */
+                        0 10px 13px rgba(0, 0, 0, 0.12); /* Ambient shadow: 12px (default) - 2px (translateY) = 10px, adjusted blur */
+            /* filter: brightness(0.95); /* Optional: slight darken on hover */
+        }
+        .HPdUG:active ._1gEmM {
+            transform: translateY(4px) scale(0.98); /* Further pressed down by 4px, slightly smaller */
+            box-shadow: 0 4px 0px #46a900,   /* Thicker shadow: 8px (default) - 4px (translateY) = 4px */
+                        0 8px 11px rgba(0, 0, 0, 0.1);    /* Ambient shadow: 12px (default) - 4px (translateY) = 8px, adjusted blur */
+            filter: brightness(0.90); /* Darken a bit more on active */
+        }
+        
+        /* Updated styles for SVG and IMG within the Duolingo-style buttons */
+        ._1gEmM {
+            /* display: flex; align-items: center; justify-content: center; are set by .HPdUG ._1gEmM */
+            background: none; /* SVG provides the visual background */
+            border: none;
+            padding: 0;
+            position: relative; /* Added for children positioning and z-index context */
+            width: 70px; /* Ensure consistent size, adjust as needed */
+            height: 70px; /* Ensure consistent size, adjust as needed */
+            transition: transform 0.15s ease-out, box-shadow 0.15s ease-out, filter 0.15s ease-out;
+            box-shadow: 0 8px 0px #46a900, 0 12px 15px rgba(0, 0, 0, 0.15); /* Default thicker shadow */
+            transform-style: preserve-3d; /* Important for 3D transforms on children if any */
+        }
+
+        /* Focus state for accessibility: clear visual ring */
+        ._1gEmM:focus-visible {
+            outline: 3px solid #1cb0f6; /* Standard blue focus outline */
+            outline-offset: 2px;       /* Offset for clarity */
+        }
+        /* Optional: remove outline if not focus-visible (e.g. mouse click) */
+        ._1gEmM:focus:not(:focus-visible) {
+          outline: none; 
+        }
+
+        ._1gEmM span._1kZ3q { /* Wrapper for the SVG */
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 1; /* SVG layer is behind the image */
+            display: flex; 
+            align-items: center;
+            justify-content: center;
+            background-color: #58cc02; /* Added */
+            border-radius: 100%;     /* Added */
+        }
+
+        ._1gEmM span._1kZ3q svg { /* The SVG itself, for the 3D button base */
+            width: 100%; /* Takes full button width */
+            display: block; 
+        }
+
+        ._1gEmM img._1B6UH { /* The icon image on top */
+            position: relative; /* Centered by parent flex, allows z-index */
+            z-index: 2;       /* Image layer, above SVG */
+            width: 32px;      /* Specific icon size */
+            height: 32px;     /* Specific icon size */
+        }
+        /* End of updated styles */
+
+        /* Connecting lines between nodes */
+        ._3T97b { position: absolute; height: 2px; background-color: var(--accent-green); top: 50%; left: 0; width: 100%; transform: translateY(-50%); }
+        /* Section header above path */
+        .PsNCe { position: relative; padding: 10px; margin-bottom: 20px; background-color: var(--panel-bg); border-radius: var(--border-radius); display: flex; align-items: center; gap: 12px; }
+        .PsNCe h1 { margin: 0; font-size: 18px; font-weight: 700; }
+
+        /* Duolingo button base styles for middle path */
+        ._7jW2t:not(._1ZhE5) {
+            outline: none;
+        }
+        ._1333i {
+            --path-level-color: var(--path-unit-character-color);
+        }
+        ._3Jm09 {
+            --web-ui_button-filter-hover: none;
+            height: 65px;
+            position: relative;
+            width: 70px;
+            z-index: 0;
+        }
+        ._1gEmM {
+            background: none;
+            border: none;
+            padding: 0;
+            transition: filter .2s;
+        }
+        ._7jW2t {
+            -webkit-tap-highlight-color: transparent;
+            -webkit-touch-callout: none;
+            cursor: pointer;
+            display: inline-flex;
+            position: relative;
+            touch-action: manipulation;
+            transform: translateZ(0);
+        }
+        button {
+            -webkit-user-select: none;
+            -moz-user-select: none;
+            user-select: none;
+        }
+        @media (min-width: 700px) {
+            *, :after, :before, button, button:focus, input, textarea {
+                -webkit-user-select: auto;
+                -moz-user-select: auto;
+                user-select: auto;
+            }
+        }
+        *, :after, :before, button, button:focus, input, textarea {
+            -webkit-tap-highlight-color: transparent;
+            box-sizing: inherit;
+            font-family: din-round, sans-serif;
+            outline: none;
+            -webkit-user-select: none;
+            -moz-user-select: none;
+            user-select: none;
+        }
+        [type=button], [type=reset], [type=submit], button {
+            -webkit-appearance: button;
+            appearance: button;
+        }
+        button, select {
+            text-transform: none;
+        }
+        button, input {
+            overflow: visible;
+        }
+        button, input, optgroup, select, textarea {
+            font-family: inherit;
+            font-size: 100%;
+            line-height: 1.15;
+            margin: 0;
+        }
     </style>
 </head>
 <body>
     <div class="grid-page">
-        <!-- Left Sidebar -->
         <aside class="left-sidebar">
-            <!-- Duolingo logo structure from dsdsds.txt -->
             <div class="_3vxyy">
                 <a class="_3qEOY" href="/learn" aria-current="page" onclick="alert('Logo clicked! Return to Dashboard.'); return false;">
-                    <img class="sOuBs" src="https://d35aaqx5ub95lt.cloudfront.net/vendor/70a4be81077a8037698067f583816ff9.svg" alt="CodeLingo">
-                    <!-- <img class="_1C091" src="https://d35aaqx5ub95lt.cloudfront.net/vendor/0cecd302cf0bcd0f73d51768feff75fe.svg"> -->
+                    <img class="sOuBs" src="logoo.png" alt="Logo">
                 </a>
             </div>
             <nav>
                 <ul id="nav-list">
-                    <!-- Nav items will be populated by JS -->
                 </ul>
             </nav>
         </aside>
 
-        <!-- Center Column -->
         <main class="center-content">
             <div class="center-header">
-                <!-- Data from JSON: section, unit, title -->
-                <div class="center-header-title"><span class="arrow">←</span> SECTION <span id="section-num"></span>, UNIT <span id="unit-num"></span> – <span id="lesson-title"></span></div>
+                <div class="center-header-title"><img src="e013fd27fc6bd1d2fea85fe707b615cd.svg"> SECTION <span id="section-num"></span>, UNIT <span id="unit-num"></span> – <span id="lesson-title"></span></div>
                 <button class="guidebook-btn"><span class="guidebook-btn-icon">📖</span> GUIDEBOOK</button>
             </div>
 
             <div class="level-path" id="level-path-container">
-                <!-- Levels will be dynamically inserted here by script -->
-            </div>
+  <div class="PsNCe LJB6r">
+    <a class="_3HqVu" href="/sections">
+      <h1 class="_3WYpp">SECTION 1, UNIT 1</h1>
+    </a>
+    <span class="U_xpg">Discuss train travel</span>
+    <a data-test="guidebook-button-19" aria-label="Opens Guidebook for this unit" class="_1ORKS _1yhVg _2V6ug _1ursp _7jW2t" href="/guidebook/de/19">
+      <img alt="Guidebook" class="uGhFr" src="path/icons/guidebook.svg">
+      <span class="_30k3d">Guidebook</span>
+    </a>
+  </div>
+  <div class="_2QaYj">
+    <div class="_3jOjF" style="height: 264px; left: calc(50% - 5px); top: 233px; transform: translateY(-50%); width: calc(50% - 11px);">
+      <img alt="" class="_1bppN" src="pathCharacters/active/character.svg">
+    </div>
+    <div class="R7x3_ _8Iu6E" style="left: 0; margin-top: 24px;"><div class="HPdUG fF_qH"><div class="_2t1Sd Fw74a"><button class="_1gEmM _7jW2t _1333i _22TV_ _3Jm09"><span class="_1kZ3q _2NI9y _1IwKR"><svg>...</svg></span><img class="_1B6UH" src="icons/level0.svg"></button></div></div></div>
+  </div>
+</div>
         </main>
 
-        <!-- Right Sidebar -->
         <aside class="right-sidebar">
             <div class="stats-bar sidebar-panel" id="stats-bar-container">
-                <!-- Stats will be populated by JS -->
             </div>
 
-            <!-- Super Promo - Using existing structure, colors updated via CSS vars -->
             <div class="super-callout" id="super-promo-container">
-                 <!-- Content from dsdsds.txt (simplified) -->
-                 <img height="20.620689655172413" src="https://d35aaqx5ub95lt.cloudfront.net/images/super/2e50c3e8358914df5285dc8cf45d0b4c.svg" width="78" alt="Super Logo">
-                 <!-- <img class="zYUV0" src="https://d35aaqx5ub95lt.cloudfront.net/images/super/fb7130289a205fadd2e196b9cc866555.svg"> -->
+                 <img height="20.620689655172413" src="2e50c3e8358914df5285dc8cf45d0b4c.svg" width="78" alt="Super Logo">
                  <h3>Level up with Super</h3>
                  <p>No ads, personalized practice, and unlimited Legendary!</p>
                  <button class="super-btn" onclick="alert('Get Super clicked!')">Get Super</button>
-            </div>
+            </div> 
 
             <div class="league-box sidebar-panel" id="league-container">
-                <!-- League info will be populated by JS -->
             </div>
 
             <div class="quests-panel sidebar-panel" id="quests-container">
-                <!-- Quests will be populated by JS -->
             </div>
         </aside>
     </div>
@@ -707,18 +871,16 @@
             "section": 2,
             "unit": 10,
             "title": "Discuss train travel",
-            // Updated navItems to include image URLs from dsdsds.txt
             "navItems": [
-                { "id": "learn", "label": "Learn", "iconUrl": "https://d35aaqx5ub95lt.cloudfront.net/vendor/784035717e2ff1d448c0f6cc4efc89fb.svg", "active": true },
-                { "id": "practice", "label": "Practice", "iconUrl": "https://d35aaqx5ub95lt.cloudfront.net/vendor/5187f6694476a769d4a4e28149867e3e.svg" },
-                { "id": "leaderboards", "label": "Leaderboards", "iconUrl": "https://d35aaqx5ub95lt.cloudfront.net/vendor/ca9178510134b4b0893dbac30b6670aa.svg" },
-                { "id": "quests", "label": "Quests", "iconUrl": "https://d35aaqx5ub95lt.cloudfront.net/vendor/7ef36bae3f9d68fc763d3451b5167836.svg" },
-                { "id": "shop", "label": "Shop", "iconUrl": "https://d35aaqx5ub95lt.cloudfront.net/vendor/0e58a94dda219766d98c7796b910beee.svg" },
-                { "id": "profile", "label": "Profile", "iconUrl": "//simg-ssl.duolingo.com/ssr-avatars/1108740731/SSR-saZ-QTBgkc/medium" }, // Example profile image
-                { "id": "more", "label": "More", "iconUrl": "https://d35aaqx5ub95lt.cloudfront.net/vendor/7159c0b5d4250a5aea4f396d53f17f0c.svg" }
+                { "id": "learn", "label": "Learn", "iconUrl": "784035717e2ff1d448c0f6cc4efc89fb.svg", "active": true },
+                { "id": "practice", "label": "Practice", "iconUrl": "5187f6694476a769d4a4e28149867e3e.svg" },
+                { "id": "leaderboards", "label": "Leaderboards", "iconUrl": "ca9178510134b4b0893dbac30b6670aa.svg" },
+                { "id": "quests", "label": "Quests", "iconUrl": "7ef36bae3f9d68fc763d3451b5167836.svg" },
+                { "id": "shop", "label": "Shop", "iconUrl": "0e58a94dda219766d98c7796b910beee.svg" },
+                { "id": "profile", "label": "Profile", "iconUrl": "medium.png" },
+                { "id": "more", "label": "More", "iconUrl": "7159c0b5d4250a5aea4f396d53f17f0c.svg" }
             ],
             "levels": [
-                // ... (keep existing levels for now, zigzag will change this)
                 { "type": "lesson", "status": "completed", "name": "Variables Intro" },
                 { "type": "start", "status": "unlocked", "name": "Unit Overview" },
                 { "type": "lesson", "status": "current", "name": "Loops & Logic" },
@@ -726,32 +888,27 @@
                 { "type": "lesson", "status": "locked", "name": "Functions Deep Dive" },
                 { "type": "milestone", "status": "locked", "name": "Unit 2 Completion" }
             ],
-            // Updated stats to include image URLs from dsdsds.txt
             "stats": {
-                "locale": { "text": "DE", "iconUrl": "https://d35aaqx5ub95lt.cloudfront.net/vendor/87938207afff1598611ba626a8c4827c.svg" }, // German flag
-                "streak": { "value": 36, "iconUrl": "https://d35aaqx5ub95lt.cloudfront.net/images/icons/398e4298a3b39ce566050e5c041949ef.svg" },
-                "xp": { "value": 755, "iconUrl": "https://d35aaqx5ub95lt.cloudfront.net/images/gems/45c14e05be9c1af1d7d0b54c6eed7eee.svg" }, // Gems for XP
-                "hearts": { "value": 5, "iconUrl": "https://d35aaqx5ub95lt.cloudfront.net/images/hearts/8fdba477c56a8eeb23f0f7e67fdec6d9.svg" }
+                "locale": { "text": "DE", "iconUrl": "javaa.png" },
+                "streak": { "value": 36, "iconUrl": "398e4298a3b39ce566050e5c041949ef.svg" },
+                "xp": { "value": 755, "iconUrl": "45c14e05be9c1af1d7d0b54c6eed7eee.svg" },
+                "hearts": { "value": 5, "iconUrl": "8fdba477c56a8eeb23f0f7e67fdec6d9.svg" }
             },
-            // Updated league to include image URLs from dsdsds.txt
             "league": { 
                 "name": "Emerald League", 
                 "rank": 20, 
                 "inDanger": true,
-                "iconUrl": "https://d35aaqx5ub95lt.cloudfront.net/images/leagues/f480e032c5222395e73dac88ce3592bb.svg", // Emerald league icon
-                "rankIconUrl": "https://d35aaqx5ub95lt.cloudfront.net/images/leagues/c2e94251e2a2d71311d2f58c39413cb9.svg" // For rank display if needed
+                "iconUrl": "f480e032c5222395e73dac88ce3592bb.svg",
+                "rankIconUrl": "c2e94251e2a2d71311d2f58c39413cb9.svg"
             },
-            // Updated quests to include image URLs from dsdsds.txt
             "quests": [
-                { "text": "Earn 10 XP", "progressCurrent": 10, "progressMax": 10, "iconUrl": "https://d35aaqx5ub95lt.cloudfront.net/images/goals/2b5a211d830a24fab92e291d50f65d1d.svg", "unlocked": true, "completedIconUrl": "https://d35aaqx5ub95lt.cloudfront.net/images/goals/33af8ba58d22f3ea21279e9a84756833.svg" },
-                { "text": "Complete 1 perfect lesson", "progressCurrent": 1, "progressMax": 1, "iconUrl": "https://d35aaqx5ub95lt.cloudfront.net/images/goals/39f13d2de304cad2ac2f88b31a7e2ff4.svg", "unlocked": true, "completedIconUrl": "https://d35aaqx5ub95lt.cloudfront.net/images/goals/14bcd86b9686b58fb979d13c7f68baf9.svg" },
-                { "text": "Earn 15 Combo Bonus XP", "progressCurrent": 7, "progressMax": 15, "iconUrl": "https://d35aaqx5ub95lt.cloudfront.net/images/goals/2b5a211d830a24fab92e291d50f65d1d.svg", "unlocked": true, "completedIconUrl": "https://d35aaqx5ub95lt.cloudfront.net/images/goals/ca23da57929a3144934ee0571a2f44e9.svg" },
-                { "text": "Unlock 3 new lessons", "progressCurrent": 0, "progressMax": 3, "iconUrl": "https://d35aaqx5ub95lt.cloudfront.net/images/goals/2b5a211d830a24fab92e291d50f65d1d.svg", "unlocked": false, "completedIconUrl": "https://d35aaqx5ub95lt.cloudfront.net/images/goals/ca23da57929a3144934ee0571a2f44e9.svg" } // Placeholder completed icon
+                { "text": "Earn 10 XP", "progressCurrent": 10, "progressMax": 10, "iconUrl": "2b5a211d830a24fab92e291d50f65d1d.svg", "unlocked": true, "completedIconUrl": "33af8ba58d22f3ea21279e9a84756833.svg" },
+                { "text": "Complete 1 perfect lesson", "progressCurrent": 1, "progressMax": 1, "iconUrl": "39f13d2de304cad2ac2f88b31a7e2ff4.svg", "unlocked": true, "completedIconUrl": "14bcd86b9686b58fb979d13c7f68baf9.svg" },
+                { "text": "Earn 15 Combo Bonus XP", "progressCurrent": 7, "progressMax": 15, "iconUrl": "2b5a211d830a24fab92e291d50f65d1d.svg", "unlocked": true, "completedIconUrl": "ca23da57929a3144934ee0571a2f44e9.svg" }
             ]
         };
 
         function renderPage(data) {
-            // Populate Nav
             const navList = document.getElementById('nav-list');
             navList.innerHTML = ''; 
             data.navItems.forEach(item => {
@@ -770,21 +927,19 @@
                 li.onclick = () => {
                     data.navItems.forEach(i => i.active = (i.id === item.id));
                     renderPage(data); 
-                    alert('Navigating to ' + item.label); // Corrected alert
+                    alert('Navigating to ' + item.label);
                 };
                 navList.appendChild(li);
             });
             
-            // Populate Header
             document.getElementById('section-num').textContent = data.section;
             document.getElementById('unit-num').textContent = data.unit;
             document.getElementById('lesson-title').textContent = data.title;
 
-            // Populate Stats Bar (Right Sidebar)
             const statsBarContainer = document.getElementById('stats-bar-container');
             statsBarContainer.innerHTML = `
                 <div class="stat-item">
-                    <img src="${data.stats.locale.iconUrl}" class="stat-flag-img" alt="Locale flag">
+                    <img src="javaa.png" class="stat-flag-img" style="width: 35px; height: 35px;" alt="Language Logo">
                 </div>
                 <div class="stat-item">
                     <img src="${data.stats.streak.iconUrl}" class="stat-icon-img" alt="Streak icon">
@@ -799,61 +954,84 @@
                     <span class="stat-text">${data.stats.hearts.value}</span>
                 </div>
             `;
-            // Add click handlers if needed, e.g., for streak
             statsBarContainer.querySelector('img[alt="Streak icon"]').parentElement.onclick = () => alert('Streak history modal!');
 
 
-            // Populate Levels (Center Column) - Placeholder, Zigzag needs major rework
             const levelPathContainer = document.getElementById('level-path-container');
             levelPathContainer.innerHTML = ''; // Clear old levels
+
+            const iconMap = {
+                lesson: 'bfa591f6854b4de08e1656b3e8ca084f.svg',
+                start: 'ef9c771afdb674f0ff82fae25c6a7b0a.svg',
+                challenge: '7ebf5ec1643d186b7edb283966329b2f.svg',
+            };
+
             data.levels.forEach((level, index) => {
-                const itemDiv = document.createElement('div');
-                itemDiv.className = 'level-item';
+                const lessonNodeWrapper = document.createElement('div');
+                lessonNodeWrapper.className = 'R7x3_ _8Iu6E';
+                // Dynamic styling for zigzag position (e.g., left, margin-top) would go here
+                // For now, they will stack based on parent container's flex properties
 
-                const nodeDiv = document.createElement('div');
-                nodeDiv.className = 'level-node ' + level.status;
-                nodeDiv.title = level.name; 
+                if (level.type === 'milestone') {
+                    const chestButton = document.createElement('button');
+                    chestButton.className = '_2wryV _1gEmM _7jW2t _2vzTv'; // Chest button classes
+                    chestButton.setAttribute('aria-label', level.name || 'Chest');
+                    if (level.status === 'locked') {
+                        chestButton.disabled = true;
+                    }
+                    chestButton.innerHTML = `<span class="_9lHjd"><img class="TI9Is" draggable="false" src="https://d35aaqx5ub95lt.cloudfront.net/images/path/0ae912c0b7a66354a850e6733ef653cb.svg"></span>`;
+                    chestButton.onclick = () => {
+                        if (level.status !== 'locked') alert('Clicked on: ' + level.name);
+                    };
+                    lessonNodeWrapper.appendChild(chestButton);
+                } else {
+                    const buttonWrapper = document.createElement('div');
+                    buttonWrapper.className = 'HPdUG fF_qH';
+                    buttonWrapper.setAttribute('role', 'button');
+                    buttonWrapper.setAttribute('tabindex', '0');
 
-                let iconContent = '';
-                switch(level.type) {
-                    case 'start': iconContent = '⭐'; break;
-                    case 'lesson': iconContent = '📘'; break;
-                    case 'challenge': iconContent = '🏋️'; break;
-                    case 'milestone': iconContent = '🗝️'; break;
-                    default: iconContent = '❓';
+                    const buttonInnerDiv = document.createElement('div');
+                    buttonInnerDiv.className = '_2t1Sd Fw74a';
+
+                    const button = document.createElement('button');
+                    let buttonClasses = ['_1gEmM', '_7jW2t', '_3Jm09'];
+
+                    if (level.status === 'locked') {
+                        buttonClasses.push('G_Z0K'); // Class for locked/greyed out
+                        button.disabled = true;
+                    } else {
+                        buttonClasses.push('_1333i'); // Standard class for active lessons
+                        if (level.status === 'completed' || (level.status === 'current' && level.type === 'start')) {
+                            buttonClasses.push('_22TV_'); // Golden class for completed or current "start"
+                        }
+                    }
+                    button.className = buttonClasses.join(' ');
+                    button.setAttribute('data-test', `skill-path-level-${index}-${level.type}`);
+                    button.setAttribute('aria-label', level.name);
+
+                    const svgSpan = document.createElement('span');
+                    svgSpan.className = '_1kZ3q _2NI9y _1IwKR';
+                    // Both SVG paths will now use #72d627 for their fill color.
+                    // The main button color #58cc02 is effectively represented by the overall visual of the SVG being green,
+                    // and the 3D edge is #46a302 via box-shadow.
+                    svgSpan.innerHTML = `<svg width="56" height="46" viewBox="0 0 56 46" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M34.2346 3.25135C35.3157 2.1269 34.7053 0.276787 33.1512 0.143156C32.0512 0.0485729 30.9331 0 29.8002 0C13.342 0 0 10.2517 0 22.8979C0 26.3985 1.02236 29.7157 2.85016 32.6827C3.47761 33.7012 4.88715 33.7751 5.71626 32.9128L34.2346 3.25135Z" fill="#72d627"></path><path d="M55.0954 12.5231C53.3548 9.61289 49.8186 6.8733 47.2219 5.21074C46.2417 4.58319 44.9772 4.77038 44.1616 5.60066C34.5035 15.4328 18.3374 31.8498 12.05 38.0427C10.9724 39.1041 10.996 40.8688 12.249 41.716C16.2271 44.4058 20.9121 45.5851 23.4852 45.9072C24.1853 45.9949 24.8657 45.7259 25.3691 45.2315C34.775 35.9934 50.2041 19.9015 54.7166 15.0879C55.3787 14.3818 55.5923 13.3539 55.0954 12.5231Z" fill="#72d627"></path></svg>`;
+                    button.appendChild(svgSpan);
+
+                    const imgIcon = document.createElement('img');
+                    imgIcon.className = '_1B6UH';
+                    imgIcon.draggable = false;
+                    imgIcon.src = iconMap[level.type] || iconMap.lesson; // Default to lesson icon if type not in map
+                    button.appendChild(imgIcon);
+
+                    if (level.status !== 'locked') {
+                        button.onclick = () => alert('Clicked on: ' + level.name);
+                    }
+                    
+                    buttonInnerDiv.appendChild(button);
+                    buttonWrapper.appendChild(buttonInnerDiv);
+                    lessonNodeWrapper.appendChild(buttonWrapper);
                 }
-                if (level.status === 'completed') iconContent = '✓';
-                
-                nodeDiv.innerHTML = iconContent;
-                
-                if (level.status !== 'locked') {
-                    nodeDiv.onclick = () => alert('Clicked on: ' + level.name); // Corrected alert
-                }
-                
-                itemDiv.appendChild(nodeDiv);
-
-                if (level.status === 'current') {
-                    const mascotWrapper = document.createElement('div');
-                    mascotWrapper.className = 'mascot-wrapper';
-                    const mascotDiv = document.createElement('div');
-                    mascotDiv.className = 'mascot';
-                    mascotDiv.textContent = '🦉'; 
-                    mascotWrapper.appendChild(mascotDiv);
-                    nodeDiv.appendChild(mascotWrapper); 
-                }
-
-                const labelDiv = document.createElement('div');
-                labelDiv.className = 'level-label';
-                labelDiv.textContent = level.name;
-                itemDiv.appendChild(labelDiv);
-
-                levelPathContainer.appendChild(itemDiv);
-
-                if (index < data.levels.length - 1) {
-                    const lineDiv = document.createElement('div');
-                    lineDiv.className = 'connecting-line';
-                    levelPathContainer.appendChild(lineDiv);
-                }
+                levelPathContainer.appendChild(lessonNodeWrapper);
             });
 
             // Populate League Info (Right Sidebar)
