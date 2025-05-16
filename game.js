@@ -353,12 +353,13 @@ function gameLoop() {
 
     // show initial dialog using combined layout dimensions
     if (showDialog && dialogueBoxImage.complete && facesetBoxImage.complete && knightFacesetImage.complete && yesButtonImage.complete) {
-        // draw separate dialog frame: FacesetBox + DialogueBoxSimple + YesButton
         const combW = canvas.width * 0.8;
         const combScale = combW / dialogFacesetImage.naturalWidth;
         const combH = dialogFacesetImage.naturalHeight * combScale;
         const combX = (canvas.width - combW) / 2;
         const combY = canvas.height - combH - 20;
+        // draw combined background under FacesetBox and DialogueBoxSimple
+        ctx.drawImage(dialogFacesetImage, combX, combY, combW, combH);
         // Faceset box on left
         const fsW = 48 * combScale;
         const fsH = 48 * combScale;
