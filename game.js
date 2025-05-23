@@ -10,8 +10,7 @@ const scoreDisplay = document.getElementById('score');
 const progressBarFill = document.getElementById('progress-bar-fill');
 const iconCpu = document.getElementById('icon-cpu');
 const progressBarContainer = document.getElementById('progress-bar-container');
-const infoPopup = document.querySelector('.info-popup'); // info popup element
-// Removed langControls and language button variables
+const infoPopup = document.querySelector('.info-popup');
 
 // Game settings
 const gridCols = 15, gridRows = 15, gridSize = 50;
@@ -345,15 +344,31 @@ function update() {
 
         // Show dialog popup
         showDialog = true;
-        dialogText = 'A CPU thinks really fast and tells the computer what to do';
+        dialogText = dialogTexts.EN[1]; // post-collect EN dialog
         // show language controls below the dialog
         // if (langControls) langControls.style.display = 'flex';
     }
 }
 
+// Dialog texts mapping [initial, after collect]
+const dialogTexts = {
+    EN: [
+        'Mission: Collect the CPU!',
+        'A CPU thinks really fast and tells the computer what to do'
+    ],
+    FR: [
+        'Mission : Récupère le processeur !',
+        'Le processeur pense très vite et dit à l’ordinateur quoi faire'
+    ],
+    AR: [
+        'المهمة: اجمع المعالج',
+        'المعالج يفكر بسرعة ويخبر الحاسوب بما يجب عليه فعله'
+    ]
+};
+
 // Dialog state
 let showDialog = true;
-let dialogText = 'Mission: Collect the CPU!';
+let dialogText = dialogTexts.EN[0]; // use initial EN dialog
 // rectangle to track YesButton position
 let yesButtonRect = { x: 0, y: 0, width: 0, height: 0 };
 // language button rectangles for canvas dialog
@@ -379,10 +394,43 @@ function gameLoop() {
     if (showDialog && dialogueBoxImage.complete && facesetBoxImage.complete && knightFacesetImage.complete && yesButtonImage.complete) {
         const combW = canvas.width * 0.8;
         const combScale = combW / dialogFacesetImage.naturalWidth;
+        // fetch CSS variables for dialog/button styling
+        const cssRoot = getComputedStyle(document.documentElement);
+        const dialogTextOffsetX = parseFloat(cssRoot.getPropertyValue('--dialog-text-offset-x')) || 0;
+        const dialogTextOffsetY = parseFloat(cssRoot.getPropertyValue('--dialog-text-offset-y')) || 0;
+        const dialogFontCss = cssRoot.getPropertyValue('--dialog-font').trim();
+        const dialogTextColor = cssRoot.getPropertyValue('--dialog-text-color').trim();
+        const btnBg = cssRoot.getPropertyValue('--dialog-btn-bg').trim();
+        const btnTextColor = cssRoot.getPropertyValue('--dialog-btn-text').trim();
+        const btnBorderColor = cssRoot.getPropertyValue('--dialog-btn-border-color').trim();
+        const btnBorderWidth = parseFloat(cssRoot.getPropertyValue('--dialog-btn-border-width')) || 0;
+        const btnBorderRadius = parseFloat(cssRoot.getPropertyValue('--dialog-btn-border-radius')) || 0;
+        const btnFontCss = cssRoot.getPropertyValue('--dialog-btn-font').trim();
+        // parse button font for labels
+        const [btnBaseSizeStr, ...btnFontFamilyParts] = btnFontCss.split(' ');
+        const btnBaseSize = parseFloat(btnBaseSizeStr) || 7;
+        const btnFontFamily = btnFontFamilyParts.join(' ') || 'sans-serif';
+        // fetch optional custom button dimensions
+        const customBtnW = parseFloat(cssRoot.getPropertyValue('--dialog-btn-width')) || 0;
+        const customBtnH = parseFloat(cssRoot.getPropertyValue('--dialog-btn-height')) || 0;
+        // helper to draw rounded rectangles
+        function drawRoundedRect(ctx, x, y, w, h, r) {
+            ctx.beginPath();
+            ctx.moveTo(x + r, y);
+            ctx.lineTo(x + w - r, y);
+            ctx.quadraticCurveTo(x + w, y, x + w, y + r);
+            ctx.lineTo(x + w, y + h - r);
+            ctx.quadraticCurveTo(x + w, y + h, x + w - r, y + h);
+            ctx.lineTo(x + r, y + h);
+            ctx.quadraticCurveTo(x, y + h, x, y + h - r);
+            ctx.lineTo(x, y + r);
+            ctx.quadraticCurveTo(x, y, x + r, y);
+            ctx.closePath();
+        }
         const combH = dialogFacesetImage.naturalHeight * combScale;
         const combX = (canvas.width - combW) / 2;
         const combY = canvas.height - combH - 20;
-        // draw combined background under FacesetBox and DialogueBoxSimple
+        // draw combined background under Faceset and DialogueBoxSimple
         ctx.drawImage(dialogFacesetImage, combX, combY, combW, combH);
         // Faceset box on left
         const fsW = 48 * combScale;
@@ -397,33 +445,65 @@ function gameLoop() {
         const dlgX = combX + fsW;
         const dlgY = combY + (combH - dlgH);
         ctx.drawImage(dialogueBoxImage, dlgX, dlgY, dlgW, dlgH);
-        // overlay text
-        ctx.font = `${13 * combScale}px sans-serif`;
-        ctx.fillStyle = '#000000';
-        ctx.fillText(dialogText, dlgX + 10 * combScale, dlgY + dlgH / 2);
+        // overlay text with horizontal offset from CSS var and use CSS-driven font/color
+        // parse CSS font (e.g. "15px Pixelify Sans") and scale size
+        const [baseSizeStr, ...fontFamilyParts] = dialogFontCss.split(' ');
+        const baseSize = parseFloat(baseSizeStr) || (13);
+        const fontFamily = fontFamilyParts.join(' ') || 'sans-serif';
+        ctx.font = `${baseSize * combScale}px ${fontFamily}`;
+        ctx.fillStyle = dialogTextColor || '#000';
+        // wrap dialogText inside the dialog box with left alignment
+        ctx.textAlign = 'left';
+        const fontSizePx = baseSize * combScale;
+        const textX = dlgX + 10 * combScale + dialogTextOffsetX * combScale;
+        const initialY = dlgY + fontSizePx + dialogTextOffsetY * combScale;
+        const maxTextWidth = dlgW - 20 * combScale;
+        const lineHeight = fontSizePx * 1.2;
+        const words = dialogText.split(' ');
+        let line = '';
+        let y = initialY;
+        for (const word of words) {
+            const testLine = line + word + ' ';
+            if (ctx.measureText(testLine).width > maxTextWidth && line) {
+                ctx.fillText(line, textX, y);
+                line = word + ' ';
+                y += lineHeight;
+            } else {
+                line = testLine;
+            }
+        }
+        ctx.fillText(line, textX, y);
         // Yes button
         const btnW = combW * 0.1;
         const btnH = yesButtonImage.naturalHeight * (btnW / yesButtonImage.naturalWidth);
+        // choose language button size: custom override or match Yes button
+        const lbWidth = customBtnW > 0 ? customBtnW * combScale : btnW;
+        const lbHeight = customBtnH > 0 ? customBtnH * combScale : btnH;
+        // spacing and language codes for buttons
+        const btnGap = 3 * combScale;
+        const langs = ['EN','FR','AR'];
         const btnX = combX + combW - btnW - 10 * combScale;
         const btnY = combY + combH - btnH - 10 * combScale;
         ctx.drawImage(yesButtonImage, btnX, btnY, btnW, btnH);
         yesButtonRect = { x: btnX, y: btnY, width: btnW, height: btnH };
-        // Draw language buttons at left of YesButton
-        const lbWidth = btnW;
-        const lbHeight = btnH;
-        const btnGap = 3 * combScale;
-        const langs = ['EN','FR','AR'];
-        languageButtons = [];
-        ctx.font = `${7 * combScale}px sans-serif`;
+        // Draw language buttons with CSS variable-driven styles
+        const dialogBtnOffsetX = parseFloat(cssRoot.getPropertyValue('--dialog-btn-offset-x')) || 0;
+        const dialogBtnOffsetY = parseFloat(cssRoot.getPropertyValue('--dialog-btn-offset-y')) || 0;
+        ctx.font = `${btnBaseSize * combScale}px ${'Pixelify Sans'}`;
+        ctx.fillStyle = btnTextColor;
         langs.forEach((lang, i) => {
-            // compute x offset left of YesButton
-            const lx = btnX - btnGap - (i + 1) * lbWidth - i * btnGap;
-            const ly = btnY;
-            // draw button background
-            ctx.fillStyle = '#ffffff';
-            ctx.fillRect(lx, ly, lbWidth, lbHeight);
+            // compute x/y for each button
+            const lx = btnX - btnGap - (i + 1) * lbWidth - i * btnGap + dialogBtnOffsetX * combScale;
+            const ly = btnY + dialogBtnOffsetY * combScale;
+            // background and border
+            ctx.fillStyle = btnBg;
+            ctx.strokeStyle = btnBorderColor;
+            ctx.lineWidth = btnBorderWidth * combScale;
+            drawRoundedRect(ctx, lx, ly, lbWidth, lbHeight, btnBorderRadius * combScale);
+            ctx.fill();
+            ctx.stroke();
             // draw label
-            ctx.fillStyle = '#000000';
+            ctx.fillStyle = btnTextColor;
             ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
             ctx.fillText(lang, lx + lbWidth / 2, ly + lbHeight / 2);
             // store click regions
@@ -556,10 +636,9 @@ canvas.addEventListener('click', function(e) {
         for (const btn of languageButtons) {
             if (clickX >= btn.x && clickX <= btn.x + btn.width &&
                 clickY >= btn.y && clickY <= btn.y + btn.height) {
-                // update dialogText by lang
-                if (btn.lang === 'EN') dialogText = 'A CPU thinks really fast and tells the computer what to do';
-                if (btn.lang === 'FR') dialogText = 'Le processeur pense très vite et dit à l’ordinateur quoi faire';
-                if (btn.lang === 'AR') dialogText = 'المعالج يفكر بسرعة ويخبر الحاسوب بما يجب عليه فعله';
+                // update dialogText based on mapping
+                const stage = cpuCollected ? 1 : 0;
+                dialogText = (dialogTexts[btn.lang] || dialogTexts.EN)[stage];
                 return;
             }
         }

@@ -14,7 +14,7 @@ body {
     margin: 0;
     background-color: #131f24;
     overflow: hidden;
-    font-family: 'MyFont', Arial, sans-serif; /* Updated font */
+    font-family: 'Pixelify Sans', 'MyFont', Arial, sans-serif; /* Use Pixelify Sans as primary */
 }
 
 .game-container { /* New wrapper style */
@@ -262,11 +262,18 @@ p {
 /* Customizable dialog & button styles */
 :root {
     --dialog-text-color: #000000;
-    --dialog-font: 15px Nunito, sans-serif;
-    --dialog-btn-bg: #ffffff;
-    --dialog-btn-text: #000000;
-    --dialog-btn-font: 12px Nunito, sans-serif;
-    --dialog-btn-spacing: 5; /* in px units before scaling */
+    --dialog-font: 12px 'Pixelify Sans';
+    --dialog-btn-bg: #8f3e56;
+    --dialog-btn-text: white;
+    --dialog-btn-border-width: 1px;
+    --dialog-btn-border-color: #ffad5d;
+    --dialog-btn-border-radius: 2px;
+    --dialog-text-offset-x: 0px;
+    --dialog-text-offset-y: 2px;
+    --dialog-btn-offset-x: 0px;
+    --dialog-btn-offset-y: 8px;
+    --dialog-btn-width: 10px;   /* custom width for AR/FR/EN buttons, 0 to use default */
+    --dialog-btn-height: 10px;  /* custom height for AR/FR/EN buttons, 0 to use default */
 }
 
 /* Responsive adjustments */
