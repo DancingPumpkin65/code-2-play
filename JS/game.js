@@ -20,7 +20,7 @@ let score = 0;
 
 // Asset paths (relative to index.html)
 const ninjaImagePath = 'nin/Actor/Characters/Boy/SeparateAnim/Idle.png'; // Using Idle for simplicity
-const appleImagePath = 'cpu.png';
+const appleImagePath = 'lib/cpu.png';
 
 // Load images
 const ninjaImage = new Image();
@@ -29,7 +29,7 @@ const appleImage = new Image();
 appleImage.src = appleImagePath;
 // Map background image
 const mapImage = new Image();
-mapImage.src = 'map1.png';
+mapImage.src = 'lib/map1.png';
 // Walk and idle sprite sheets
 const walkSheet = new Image();
 walkSheet.src = 'nin/Actor/Characters/KnightGold/SeparateAnim/Walk.png';
@@ -353,16 +353,16 @@ function update() {
 // Dialog texts mapping [initial, after collect]
 const dialogTexts = {
     EN: [
-        'Mission: Collect the CPU!',
-        'A CPU thinks really fast and tells the computer what to do'
+        'Mission : Collect the CPU!',
+        'A CPU thinks really fast and tells the computer what to do.'
     ],
     FR: [
-        'Mission : Récupère le processeur !',
-        'Le processeur pense très vite et dit à l’ordinateur quoi faire'
+        'Mission : Récupère le processeur!',
+        'Le processeur pense très vite et dit à l’ordinateur quoi faire.'
     ],
     AR: [
-        'المهمة: اجمع المعالج',
-        'المعالج يفكر بسرعة ويخبر الحاسوب بما يجب عليه فعله'
+        '!المهمة : اجمع المعالج',
+        '.المعالج يفكر بسرعة ويخبر الحاسوب بما يجب عليه فعله'
     ]
 };
 
