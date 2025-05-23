@@ -259,6 +259,16 @@ p {
     margin: 4px 0;
 }
 
+/* Customizable dialog & button styles */
+:root {
+    --dialog-text-color: #000000;
+    --dialog-font: 15px Nunito, sans-serif;
+    --dialog-btn-bg: #ffffff;
+    --dialog-btn-text: #000000;
+    --dialog-btn-font: 12px Nunito, sans-serif;
+    --dialog-btn-spacing: 5; /* in px units before scaling */
+}
+
 /* Responsive adjustments */
 @media (max-width: 768px) {
     .game-container {

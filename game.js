@@ -398,8 +398,8 @@ function gameLoop() {
         const dlgY = combY + (combH - dlgH);
         ctx.drawImage(dialogueBoxImage, dlgX, dlgY, dlgW, dlgH);
         // overlay text
-        ctx.font = `${15 * combScale}px sans-serif`;
-        ctx.fillStyle = '#000000'; // black text for dialog
+        ctx.font = `${13 * combScale}px sans-serif`;
+        ctx.fillStyle = '#000000';
         ctx.fillText(dialogText, dlgX + 10 * combScale, dlgY + dlgH / 2);
         // Yes button
         const btnW = combW * 0.1;
@@ -408,24 +408,26 @@ function gameLoop() {
         const btnY = combY + combH - btnH - 10 * combScale;
         ctx.drawImage(yesButtonImage, btnX, btnY, btnW, btnH);
         yesButtonRect = { x: btnX, y: btnY, width: btnW, height: btnH };
-        // Draw language buttons inside dialog
-        const lbWidth = 40 * combScale;
-        const lbHeight = 20 * combScale;
-        const spacing = 10 * combScale;
-        const totalWidth = 3 * lbWidth + 2 * spacing;
-        let startX = dlgX + (dlgW - totalWidth) / 2;
-        const lbY = dlgY + dlgH + spacing;
+        // Draw language buttons at left of YesButton
+        const lbWidth = btnW;
+        const lbHeight = btnH;
+        const btnGap = 3 * combScale;
         const langs = ['EN','FR','AR'];
         languageButtons = [];
-        ctx.font = `${12 * combScale}px sans-serif`;
+        ctx.font = `${7 * combScale}px sans-serif`;
         langs.forEach((lang, i) => {
-            const lx = startX + i * (lbWidth + spacing);
-            ctx.fillStyle = '#ffffff'; // white button background
-            ctx.fillRect(lx, lbY, lbWidth, lbHeight);
-            ctx.fillStyle = '#000000'; // black button text
+            // compute x offset left of YesButton
+            const lx = btnX - btnGap - (i + 1) * lbWidth - i * btnGap;
+            const ly = btnY;
+            // draw button background
+            ctx.fillStyle = '#ffffff';
+            ctx.fillRect(lx, ly, lbWidth, lbHeight);
+            // draw label
+            ctx.fillStyle = '#000000';
             ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
-            ctx.fillText(lang, lx + lbWidth/2, lbY + lbHeight/2);
-            languageButtons.push({ x: lx, y: lbY, width: lbWidth, height: lbHeight, lang });
+            ctx.fillText(lang, lx + lbWidth / 2, ly + lbHeight / 2);
+            // store click regions
+            languageButtons.push({ x: lx, y: ly, width: lbWidth, height: lbHeight, lang });
         });
     }
 
