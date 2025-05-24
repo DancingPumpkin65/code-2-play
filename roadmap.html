@@ -1,0 +1,448 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Curriculum Roadmap</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 20px;
+            background-color: #f0f2f5;
+            display: flex;
+            justify-content: center;
+        }
+
+        .roadmap-container {
+            position: relative;
+            width: 100%;
+            max-width: 1200px; /* Adjust as needed */
+            margin: auto;
+            padding-top: 50px; /* Space for legend */
+        }
+
+        .legend {
+            position: absolute;
+            top: 0px;
+            right: 0px;
+            border: 2px dashed #c00;
+            padding: 10px;
+            background-color: #fff;
+            font-size: 12px;
+            border-radius: 8px;
+        }
+        .legend h4 {
+            margin-top: 0;
+            margin-bottom: 5px;
+            color: #c00;
+        }
+        .legend p {
+            margin: 3px 0;
+        }
+        .legend .ap { color: #007bff; font-weight: bold; }
+        .legend .tech { color: #28a745; font-weight: bold; }
+        .legend .bm { color: #ffc107; font-weight: bold; }
+        .legend .cd { color: #17a2b8; font-weight: bold; }
+        .legend .id { color: #6f42c1; font-weight: bold; }
+
+
+        .path {
+            position: relative;
+            padding: 20px 0;
+        }
+
+        .path-segment {
+            display: flex;
+            align-items: flex-start; /* Align items to the top of the segment */
+            margin-bottom: 40px; /* Space between segments */
+            position: relative;
+        }
+
+        .year-marker {
+            width: 80px;
+            height: 80px;
+            background-color: #00A99D; /* Teal color from image */
+            color: white;
+            border-radius: 50%;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            font-size: 14px;
+            font-weight: bold;
+            flex-shrink: 0;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+            z-index: 2;
+        }
+        .year-marker span {
+            font-size: 24px;
+        }
+
+        .content-area {
+            display: flex;
+            flex-direction: column;
+            padding-left: 30px; /* Space from year marker */
+            padding-right: 30px;
+            flex-grow: 1;
+            position: relative; /* For pseudo-elements */
+        }
+        
+        /* Basic road line - adjust as needed for curves */
+        .content-area::before {
+            content: '';
+            position: absolute;
+            left: -60px; /* Connects from behind the year marker */
+            top: 40px; /* Vertically center with year marker */
+            width: 90px; /* Extends to the year marker */
+            height: 15px;
+            background-color: #e0e0e0; /* Light grey road */
+            z-index: 1;
+            border-top: 3px solid #ccc;
+            border-bottom: 3px solid #ccc;
+        }
+        
+        /* For segments on the right, the year marker is on the right */
+        .path-segment.align-right .year-marker {
+            order: 2; /* Year marker comes after content */
+        }
+        .path-segment.align-right .content-area {
+            padding-left: 0;
+            padding-right: 30px; /* Space from year marker */
+            align-items: flex-end; /* Align content to the right */
+            text-align: right;
+        }
+         .path-segment.align-right .content-area::before {
+            left: auto;
+            right: -60px; /* Connects from behind the year marker on the right */
+         }
+
+
+        .main-topics {
+            display: flex;
+            justify-content: space-around; /* Distribute TECH/BM */
+            margin-bottom: 10px;
+            width: 100%;
+        }
+        .main-topics .topic-group {
+            font-size: 12px;
+            color: #555;
+            text-align: center;
+        }
+        .main-topics .topic-group strong {
+            display: block;
+            font-size: 14px;
+            color: #333;
+        }
+
+        .sub-topics {
+            display: flex;
+            justify-content: space-around; /* Distribute AP/CD/ID */
+            background-color: #ffffff;
+            padding: 15px;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+            width: 100%;
+        }
+
+        .topic-column {
+            flex: 1;
+            padding: 0 10px;
+            font-size: 12px;
+        }
+        .topic-column h4 {
+            margin-top: 0;
+            margin-bottom: 5px;
+            font-size: 13px;
+        }
+        .topic-column ul {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+            color: #666;
+        }
+        .topic-column ul li {
+            margin-bottom: 3px;
+        }
+
+        .topic-column .ap { color: #007bff; }
+        .topic-column .tech { color: #28a745; } /* Not used in column headers directly */
+        .topic-column .bm { color: #ffc107; } /* Not used in column headers directly */
+        .topic-column .cd { color: #17a2b8; }
+        .topic-column .id { color: #6f42c1; }
+
+        /* Adjustments for new road styling */
+        :root {
+            --road-thickness: 22px;
+            --road-bg: #e9ecef; /* Lighter grey for road */
+            --road-border-color: #ced4da; /* Slightly darker border */
+            --road-dash-color: #adb5bd; /* Dashes color */
+            --year-marker-v-center: 40px; /* Vertical center of the 80px year marker */
+            --year-marker-width: 80px; /* Width of the year marker */
+            --vertical-road-offset: 200px; /* How far the vertical part of the road is from the closest container edge */
+            --segment-margin: 40px; /* Original margin-bottom of path-segment */
+        }
+
+        .path-connector { 
+            display: none; /* Remove old connector div */
+        }
+        
+        /* Remove old road stub from content-area if it existed */
+        .content-area::before {
+           display: none; 
+        }
+
+        .path-segment {
+            /* ... existing styles ... */
+            margin-bottom: var(--segment-margin); /* Use variable for clarity */
+            position: relative; /* Ensure it's a positioning context for pseudo-elements */
+        }
+
+        /* Horizontal Road Part for current segment - drawn by ::after */
+        .path-segment::after {
+            content: '';
+            position: absolute;
+            height: var(--road-thickness);
+            top: calc(var(--year-marker-v-center) - (var(--road-thickness) / 2));
+            background-color: var(--road-bg);
+            border-top: 1px solid var(--road-border-color);
+            border-bottom: 1px solid var(--road-border-color);
+            z-index: 0; /* Behind year marker and content */
+
+            /* Dashed line */
+            background-image: linear-gradient(to right, var(--road-dash-color) 50%, transparent 50%);
+            background-size: 18px 1px; /* dash-width, line-height for dashes */
+            background-repeat: repeat-x;
+        }
+
+        /* Vertical Road Part connecting from PREVIOUS segment - drawn by ::before */
+        .path-segment:not(:first-child)::before {
+            content: '';
+            position: absolute;
+            width: var(--road-thickness);
+            height: var(--segment-margin); /* Height of the gap between segments */
+            top: calc(-1 * var(--segment-margin)); /* Position it in the gap above current segment */
+            background-color: var(--road-bg);
+            border-left: 1px solid var(--road-border-color);
+            border-right: 1px solid var(--road-border-color);
+            z-index: 0;
+
+            /* Vertical Dashed line */
+            background-image: linear-gradient(to bottom, var(--road-dash-color) 50%, transparent 50%);
+            background-size: 1px 18px; /* line-width, dash-height for dashes */
+            background-repeat: repeat-y;
+            background-position: center 0; /* Start dashes from top */
+        }
+
+        /* Segment with Year Marker on the LEFT */
+        .path-segment:not(.align-right)::after { /* Horizontal road */
+            left: var(--year-marker-width); 
+            width: calc(var(--vertical-road-offset) - var(--year-marker-width)); 
+            border-left: 1px solid var(--road-border-color); /* Cap the road end */
+            background-position: 0% center; /* Align dashes from the left */
+        }
+        /* Vertical road for segment with Year Marker on LEFT (comes from PREVIOUS segment which was on RIGHT) */
+        .path-segment:not(.align-right):not(:first-child)::before {
+            /* This vertical road should be on the RIGHT side of the layout, connecting to previous horizontal road end */
+            right: var(--vertical-road-offset); 
+        }
+
+        /* Segment with Year Marker on the RIGHT */
+        .path-segment.align-right::after { /* Horizontal road */
+            right: var(--year-marker-width); 
+            width: calc(var(--vertical-road-offset) - var(--year-marker-width)); 
+            border-right: 1px solid var(--road-border-color); /* Cap the road end */
+            background-position: 100% center; /* Align dashes from the right */
+        }
+        /* Vertical road for segment with Year Marker on RIGHT (comes from PREVIOUS segment which was on LEFT) */
+         .path-segment.align-right:not(:first-child)::before {
+            /* This vertical road should be on the LEFT side of the layout, connecting to previous horizontal road end */
+            left: var(--vertical-road-offset);
+        }
+        
+        /* Ensure year marker and content are above the road */
+        .year-marker {
+            z-index: 2; /* Already has this, ensures it's above road */
+        }
+        .content-area {
+            position: relative; /* Needed for z-index to work if not already set */
+            z-index: 1; /* Ensures content block is above road */
+        }
+        /* Adjustments for alternating layout */
+        .path-segment:nth-child(even) .content-area::before {
+            /* Could add more specific styling for curves if desired */
+        }
+        .path-segment:nth-child(odd) .content-area::before {
+            /* Could add more specific styling for curves if desired */
+        }
+
+    </style>
+</head>
+<body>
+    <div class="roadmap-container">
+        <div class="legend">
+            <h4>LEGEND</h4>
+            <p><span class="ap">AP</span> : Algorithme et Programmation</p>
+            <p><span class="tech">TECH</span> : Technologie</p>
+            <p><span class="bm">BM</span> : Bureautique et Médias</p>
+            <p><span class="cd">CD</span> : Citoyenneté Digitale</p>
+            <p><span class="id">ID</span> : Information et Data</p>
+        </div>
+
+        <div class="path">
+            <!-- Year 9 -->
+            <div class="path-segment">
+                <div class="year-marker">Année <span>9</span></div>
+                <div class="content-area">
+                    <div class="main-topics">
+                        <div class="topic-group">Digital <strong>TECH</strong></div>
+                        <div class="topic-group">Graphiques Vectoriels <strong>BM</strong></div>
+                    </div>
+                    <div class="sub-topics">
+                        <div class="topic-column"><h4 class="ap">AP</h4><ul><li>Application Mobile et IA</li></ul></div>
+                        <div class="topic-column"><h4 class="cd">CD</h4><ul><li>Ia Big data et nous</li></ul></div>
+                        <div class="topic-column"><h4 class="id">ID</h4><ul><li>Machine Learning</li></ul></div>
+                    </div>
+                </div>
+            </div>
+            <div class="path-connector"></div>
+
+            <!-- Year 8 -->
+            <div class="path-segment align-right">
+                <div class="year-marker">Année <span>8</span></div>
+                <div class="content-area">
+                    <div class="main-topics">
+                        <div class="topic-group">Cybersecurité <strong>TECH</strong></div>
+                        <div class="topic-group">Usage des médias <strong>BM</strong></div>
+                    </div>
+                    <div class="sub-topics">
+                        <div class="topic-column"><h4 class="ap">AP</h4><ul><li>Python</li></ul></div>
+                        <div class="topic-column"><h4 class="cd">CD</h4><ul><li>La vie digitale</li></ul></div>
+                        <div class="topic-column"><h4 class="id">ID</h4><ul><li>Data Science</li></ul></div>
+                    </div>
+                </div>
+            </div>
+            <div class="path-connector"></div>
+            
+            <!-- Year 7 (Example - content from image is sparse here for main topics) -->
+            <div class="path-segment">
+                <div class="year-marker">Année <span>7</span></div>
+                <div class="content-area">
+                    <div class="main-topics">
+                        <div class="topic-group">Histoire de l'informatique <strong>TECH</strong></div>
+                        <div class="topic-group">Modélisation 3D <strong>BM</strong></div>
+                    </div>
+                    <div class="sub-topics">
+                        <div class="topic-column"><h4 class="ap">AP</h4><ul><li>Introduction à Python</li></ul></div>
+                        <div class="topic-column"><h4 class="cd">CD</h4><ul><li>Réel ou Fake</li></ul></div>
+                        <div class="topic-column"><h4 class="id">ID</h4><ul><li>Excel avancé</li></ul></div>
+                    </div>
+                </div>
+            </div>
+            <div class="path-connector"></div>
+
+            <!-- Year 6 -->
+            <div class="path-segment align-right">
+                <div class="year-marker">Année <span>6</span></div>
+                <div class="content-area">
+                    <div class="main-topics">
+                        <div class="topic-group">Intelligence Artificielle <strong>TECH</strong></div>
+                        <div class="topic-group">Création Page Web <strong>BM</strong></div>
+                    </div>
+                    <div class="sub-topics">
+                        <div class="topic-column"><h4 class="ap">AP</h4><ul><li>Web</li></ul></div>
+                        <div class="topic-column"><h4 class="cd">CD</h4><ul><li>Qui es-tu en ligne?</li><li>Se protéger du phishing</li><li>Chatter en sécurité</li><li>Les actualités crédibles</li></ul></div>
+                        <div class="topic-column"><h4 class="id">ID</h4><ul><li>Excel (Modélisation de données)</li></ul></div>
+                    </div>
+                </div>
+            </div>
+            <div class="path-connector"></div>
+
+            <!-- Year 5 -->
+            <div class="path-segment">
+                <div class="year-marker">Année <span>5</span></div>
+                <div class="content-area">
+                    <div class="main-topics">
+                        <div class="topic-group">Systèmes et recherche <strong>TECH</strong></div>
+                        <div class="topic-group">Production vidéo <strong>BM</strong></div>
+                    </div>
+                    <div class="sub-topics">
+                        <div class="topic-column"><h4 class="ap">AP</h4><ul><li>Variables & Fonctions</li></ul></div>
+                        <div class="topic-column"><h4 class="cd">CD</h4><ul><li>L'équilibre numérique</li><li>Eviter le clickbait</li><li>Stéréotypes de genre</li><li>Les actualités en ligne</li></ul></div>
+                        <div class="topic-column"><h4 class="id">ID</h4><ul><li>Introduction aux feuilles de calcul</li></ul></div>
+                    </div>
+                </div>
+            </div>
+            <div class="path-connector"></div>
+            
+            <!-- Year 4 -->
+            <div class="path-segment align-right">
+                <div class="year-marker">Année <span>4</span></div>
+                <div class="content-area">
+                    <div class="main-topics">
+                        <div class="topic-group">Internet <strong>TECH</strong></div>
+                        <div class="topic-group">Production audio <strong>BM</strong></div>
+                    </div>
+                    <div class="sub-topics">
+                        <div class="topic-column"><h4 class="ap">AP</h4><ul><li>Conditions</li></ul></div>
+                        <div class="topic-column"><h4 class="cd">CD</h4><ul><li>Mes choix de médias</li><li>Privée vs personnel</li><li>Super citoyen numérique</li><li>Droits d'un créateur</li></ul></div>
+                        <div class="topic-column"><h4 class="id">ID</h4><ul><li>Bases de données</li></ul></div>
+                    </div>
+                </div>
+            </div>
+            <div class="path-connector"></div>
+
+            <!-- Year 3 -->
+             <div class="path-segment">
+                <div class="year-marker">Année <span>3</span></div>
+                <div class="content-area">
+                    <div class="main-topics">
+                        <div class="topic-group">Réseaux <strong>TECH</strong></div>
+                        <div class="topic-group">Publication & Design <strong>BM</strong></div>
+                    </div>
+                    <div class="sub-topics">
+                        <div class="topic-column"><h4 class="ap">AP</h4><ul><li>Boucles et imbrications</li></ul></div>
+                        <div class="topic-column"><h4 class="cd">CD</h4><ul><li>Identifier les Fake</li><li>Protéger un mot de passe</li><li>Empreinte numérique</li><li>Pratiquer la gentillesse</li></ul></div>
+                        <div class="topic-column"><h4 class="id">ID</h4><ul><li>Collecter et visualiser les données</li></ul></div>
+                    </div>
+                </div>
+            </div>
+            <div class="path-connector"></div>
+
+            <!-- Year 2 -->
+            <div class="path-segment align-right">
+                <div class="year-marker">Année <span>2</span></div>
+                <div class="content-area">
+                    <div class="main-topics">
+                        <div class="topic-group">Ordinateurs <strong>TECH</strong></div>
+                        <div class="topic-group">Peinture digitale <strong>BM</strong></div>
+                    </div>
+                    <div class="sub-topics">
+                        <div class="topic-column"><h4 class="ap">AP</h4><ul><li>Répétitions & Événements</li></ul></div>
+                        <div class="topic-column"><h4 class="cd">CD</h4><ul><li>Citer les sources</li><li>Communauté en ligne</li><li>Pistes numériques</li><li>La méchanceté en ligne</li></ul></div>
+                        <div class="topic-column"><h4 class="id">ID</h4><ul><li>Arbres et Branches</li></ul></div>
+                    </div>
+                </div>
+            </div>
+            <div class="path-connector"></div>
+
+            <!-- Year 1 -->
+            <div class="path-segment">
+                <div class="year-marker">Année <span>1</span></div>
+                <div class="content-area">
+                    <div class="main-topics">
+                        <div class="topic-group">La technologie autour de nous <strong>TECH</strong></div>
+                        <div class="topic-group">Musique digitale <strong>BM</strong></div>
+                    </div>
+                    <div class="sub-topics">
+                        <div class="topic-column"><h4 class="ap">AP</h4><ul><li>Algorithmes séquentiels & Répétitions avec Scratch JR</li></ul></div>
+                        <div class="topic-column"><h4 class="cd">CD</h4><ul><li>Technologie & émotions</li><li>L'équilibre des médias</li><li>Les feux de circulation sur internet</li></ul></div>
+                        <div class="topic-column"><h4 class="id">ID</h4><ul><li>Donnée et Groupes & Représentation</li></ul></div>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+</body>
+</html>

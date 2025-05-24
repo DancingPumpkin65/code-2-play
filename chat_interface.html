@@ -1,0 +1,590 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>game interface test</title>
+    <link rel="stylesheet" href="style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800&display=swap" rel="stylesheet"> <!-- Added font link -->
+    <style>
+        /* Chat Widget Styles */
+        :root {
+            --chat-widget-bg: #fdfaf0; /* Very light tan */
+            --chat-widget-border-header-bg: #58cc02; /* Dark muted teal/green */
+            --chat-header-text: #ffffff;
+            --chat-close-button-bg: #e74c3c; /* Red */
+            --chat-close-button-icon: #ffffff;
+
+            --user-message-bg: #3f9eca; /* Bright green */
+            --user-message-text: #ffffff;
+
+            --bot-message-bg: #ede8d8; /* Light beige */
+            --bot-message-text: #5c5241; /* Dark brown/grey */
+            --bot-message-border: #d8d1c0; 
+
+            --chat-input-area-border-top: #e0dacd;
+            --chat-input-bg: #ffffff;
+            --chat-input-border: #cccccc;
+            --chat-input-placeholder: #999999;
+            --chat-input-text: #333333;
+
+            --chat-send-button-bg: #4eb9a8; /* Teal/blue */
+            --chat-send-button-icon: #ffffff;
+            --chat-send-button-hover-bg: #41a090;
+        }
+
+        /* Apply Myfont font to chat widget if not inherited */
+        .chat-widget, .chat-widget input, .chat-widget button {
+            font-family: 'Myfont', sans-serif;
+        }
+
+        .center-content { /* Ensure it centers the chat widget */
+            flex-grow: 1;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+            /* background-color: #131f24; /* Assuming style1.css handles this or set as needed */
+        }
+
+        .chat-widget {
+            width: 370px;
+            max-width: 100%;
+            background-color: var(--chat-widget-bg);
+            border-radius: 16px;
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+            border: 6px solid var(--chat-widget-border-header-bg);
+        }
+
+        .chat-header {
+            background-color: var(--chat-widget-border-header-bg);
+            color: var(--chat-header-text);
+            padding: 12px 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-size: 20px;
+            font-weight: 700;
+        }
+
+        .chat-header .close-btn {
+            background-color: var(--chat-close-button-bg);
+            color: var(--chat-close-button-icon);
+            border: none;
+            border-radius: 50%;
+            width: 28px;
+            height: 28px;
+            font-size: 18px;
+            font-weight: bold;
+            cursor: pointer;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            line-height: 28px;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.2);
+        }
+        .chat-header .close-btn:hover {
+            background-color: #d32f2f; /* Darker red */
+        }
+
+        .chat-messages {
+            flex-grow: 1;
+            padding: 15px;
+            overflow-y: auto;
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            background-color: var(--chat-widget-bg);
+        }
+
+        .message {
+            display: flex;
+            align-items: flex-end;
+            max-width: 90%;
+        }
+
+        .message-avatar {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-weight: bold;
+            font-size: 18px; /* For text placeholder */
+            flex-shrink: 0;
+        }
+
+        .user-message .message-avatar {
+            background-color: #ffcc80; /* Placeholder color for user avatar */
+            color: #5d4037;
+            margin-right: 8px;
+        }
+
+        .bot-message .message-avatar {
+            background-color: #f39c12; /* Placeholder color for bot avatar */
+            color: #ffffff;
+            margin-left: 8px;
+        }
+
+        .message-content {
+            padding: 10px 14px;
+            border-radius: 18px;
+            font-size: 15px;
+            line-height: 1.45;
+            position: relative;
+            box-shadow: 0 1px 2px rgba(0,0,0,0.1);
+        }
+
+        .user-message {
+            align-self: flex-start;
+            flex-direction: row;
+        }
+        .user-message .message-content {
+            background-color: var(--user-message-bg);
+            color: var(--user-message-text);
+            border-bottom-left-radius: 6px;
+        }
+        .user-message .message-content::before {
+            content: '';
+            position: absolute;
+            bottom: 0px;
+            left: -7px; /* Adjusted for better visual */
+            width: 0;
+            height: 0;
+            border-style: solid;
+            border-width: 0px 12px 12px 0; /* Pointy tail */
+            border-color: transparent var(--user-message-bg) transparent transparent;
+        }
+
+        .bot-message {
+            align-self: flex-end;
+            flex-direction: row-reverse;
+        }
+        .bot-message .message-content {
+            background-color: var(--bot-message-bg);
+            color: var(--bot-message-text);
+            border: 1px solid var(--bot-message-border);
+            border-bottom-right-radius: 6px;
+        }
+        .bot-message .message-content.with-border::before { /* Outer tail (border) */
+            content: '';
+            position: absolute;
+            bottom: -1px; /* Aligns with border */
+            right: -9px; /* Position for border */
+            width: 0;
+            height: 0;
+            border-style: solid;
+            border-width: 12px 0 0 12px; /* Pointy tail */
+            border-color: transparent transparent transparent var(--bot-message-border);
+        }
+        .bot-message .message-content.with-border::after { /* Inner tail (background) */
+            content: '';
+            position: absolute;
+            bottom: 0px;
+            right: -7px; /* Position inside border */
+            width: 0;
+            height: 0;
+            border-style: solid;
+            border-width: 11px 0 0 11px; /* Slightly smaller */
+            border-color: transparent transparent transparent var(--bot-message-bg);
+        }
+
+
+        .chat-input-area {
+            padding: 12px 15px;
+            background-color: var(--chat-widget-bg);
+            display: flex;
+            align-items: center;
+            border-top: 1px solid var(--chat-input-area-border-top);
+        }
+
+        .chat-input-area input[type="text"] {
+            flex-grow: 1;
+            padding: 10px 15px;
+            border: 1px solid var(--chat-input-border);
+            border-radius: 20px;
+            font-size: 14px;
+            margin-right: 10px;
+            background-color: var(--chat-input-bg);
+            color: var(--chat-input-text);
+            outline: none;
+        }
+        .chat-input-area input[type="text"]::placeholder {
+            color: var(--chat-input-placeholder);
+        }
+        .chat-input-area input[type="text"]:focus {
+            border-color: var(--chat-send-button-bg);
+        }
+
+        .chat-input-area .voice-btn, /* New style for voice button */
+        .chat-input-area .send-btn {
+            background-color: var(--chat-send-button-bg);
+            color: var(--chat-send-button-icon);
+            border: none;
+            border-radius: 12px;
+            width: 42px;
+            height: 42px;
+            cursor: pointer;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.15);
+            transition: background-color 0.2s ease;
+            flex-shrink: 0;
+        }
+        .chat-input-area .voice-btn { /* Specific for voice button if needed */
+            margin-right: 8px; /* Space between voice and text input */
+        }
+        .chat-input-area .send-btn { /* Send button is now to the right of text input */
+            margin-left: 8px;
+        }
+
+        .chat-input-area .voice-btn:hover,
+        .chat-input-area .send-btn:hover {
+            background-color: var(--chat-send-button-hover-bg);
+        }
+
+        .chat-input-area .voice-btn svg,
+        .chat-input-area .send-btn svg {
+            width: 22px;
+            height: 22px;
+            fill: var(--chat-send-button-icon);
+        }
+
+        /* Voice Message Player Styles */
+        .message-content.voice-player {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 8px 12px; /* Adjust padding for voice player */
+        }
+        .voice-player .play-icon svg {
+            width: 24px;
+            height: 24px;
+            fill: var(--user-message-text); /* Or specific color if needed */
+            cursor: pointer;
+        }
+        .voice-player .waveform {
+            display: flex;
+            align-items: center;
+            height: 24px; /* Match play icon height */
+            gap: 2px;
+        }
+        .voice-player .waveform .bar {
+            background-color: var(--user-message-text); /* Waveform bar color */
+            opacity: 0.7;
+            width: 3px;
+            border-radius: 2px;
+        }
+        .voice-player .duration {
+            font-size: 13px;
+            color: var(--user-message-text); /* Or specific color */
+            opacity: 0.9;
+        }
+
+        /* Style for images within message content */
+        .message-content img.inline-image {
+            max-width: 100%;
+            border-radius: 10px; /* Match message bubble rounding a bit */
+            margin-top: 8px; /* Space between text and image */
+            display: block; /* Ensure it takes its own line */
+        }
+
+        /* Bot Audio Icon Styles */
+        .bot-audio-trigger {
+            display: inline-flex; /* Use flex to align icon nicely */
+            align-items: center;
+            margin-left: 8px;
+            cursor: pointer;
+            vertical-align: middle; /* Align with surrounding text/elements */
+        }
+        .bot-audio-icon {
+            width: 18px;
+            height: 18px;
+            fill: var(--bot-message-text); /* Use variable for color */
+            opacity: 0.6; /* Slightly less prominent */
+            transition: opacity 0.2s ease;
+        }
+        .bot-audio-trigger:hover .bot-audio-icon {
+            opacity: 1;
+        }
+
+        /* Chat Popup Styles */
+        .chat-popup-trigger {
+            position: fixed;
+            bottom: 30px;
+            right: 30px;
+            cursor: pointer;
+            z-index: 1001;
+            border-radius: 50%;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+            transition: transform 0.2s ease-out, box-shadow 0.2s ease-out;
+        }
+        .chat-popup-trigger:hover {
+            transform: scale(1.1);
+            box-shadow: 0 6px 16px rgba(0,0,0,0.25);
+        }
+        .chat-popup-trigger img {
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            display: block;
+            border: 3px solid var(--chat-widget-border-header-bg, #58cc02);
+        }
+
+        .chat-widget-container {
+            position: fixed;
+            bottom: 30px;
+            right: 30px;
+            width: 370px; /* Match .chat-widget width */
+            z-index: 1000;
+            transform: translateX(calc(100% + 40px)); /* Initially off-screen */
+            opacity: 0;
+            visibility: hidden;
+            /* Transition for closing: visibility changes after transform/opacity */
+            transition: transform 0.4s cubic-bezier(0.18, 0.89, 0.32, 1.28), opacity 0.3s ease-out, visibility 0s linear 0.4s;
+        }
+
+        .chat-widget-container.open {
+            transform: translateX(0);
+            opacity: 1;
+            visibility: visible;
+            /* Transition for opening: visibility changes immediately */
+            transition: transform 0.4s cubic-bezier(0.18, 0.89, 0.32, 1.28), opacity 0.3s ease-out, visibility 0s linear 0s;
+        }
+
+        /* Adjustments for .chat-widget when in popup */
+        .chat-widget {
+            /* width, background, border-radius, box-shadow, display:flex, flex-direction:column, border are mostly set */
+            /* overflow: hidden; /* Already set, good for containing content */
+            height: clamp(450px, 70vh, 600px); /* Responsive height for popup */
+        }
+    </style>
+</head>
+<body>
+    <div class="game-container"> <!-- Added a wrapper for layout -->
+        <aside class="left-sidebar">
+            <div class="_3vxyy">
+                <a class="_3qEOY" href="#" aria-current="page"> <!-- Simplified link -->
+                    <img class="sOuBs" src="logoo.png" alt="Logo">
+                </a>
+            </div>
+            <nav>
+                <ul id="nav-list">
+                    <!-- Nav items will be dynamically added or can be hardcoded here if static -->
+                    <li class="nav-item active learn-active">
+                        <img src="784035717e2ff1d448c0f6cc4efc89fb.svg" alt="Learn" class="nav-item-icon-img">
+                        <span class="nav-item-label">LEARN</span>
+                    </li>
+                    <li class="nav-item">
+                        <img src="5187f6694476a769d4a4e28149867e3e.svg" alt="Practice" class="nav-item-icon-img">
+                        <span class="nav-item-label">PRACTICE</span>
+                    </li>
+                    <li class="nav-item">
+                        <img src="ca9178510134b4b0893dbac30b6670aa.svg" alt="Leaderboard" class="nav-item-icon-img">
+                        <span class="nav-item-label">LEADERBOARD</span>
+                    </li>
+                    <li class="nav-item">
+                        <img src="ca23da57929a3144934ee0571a2f44e9.svg" alt="Quests" class="nav-item-icon-img">
+                        <span class="nav-item-label">QUESTS</span>
+                    </li>
+                    <li class="nav-item">
+                        <img src="0e58a94dda219766d98c7796b910beee.svg" alt="Shop" class="nav-item-icon-img">
+                        <span class="nav-item-label">SHOP</span>
+                    </li>
+                    <li class="nav-item">
+                        <img src="medium.png" alt="Profile" class="nav-item-icon-img">
+                        <span class="nav-item-label">PROFILE</span>
+                    </li>
+                     <li class="nav-item">
+                        <img src="7159c0b5d4250a5aea4f396d53f17f0c.svg" alt="More" class="nav-item-icon-img">
+                        <span class="nav-item-label">MORE</span>
+                    </li>
+                </ul>
+            </nav>
+        </aside>
+
+        <main class="center-content">
+        </main>
+    </div>
+
+    <div class="chat-popup-trigger" id="chatPopupTrigger">
+        <img src="nin/Actor/Characters/OldMan/Faceset.png" alt="Open Chat">
+    </div>
+
+    <div class="chat-widget-container" id="chatWidgetContainer">
+        <div class="chat-widget">
+            <div class="chat-header">
+                <span>ChatBot</span>
+                <button class="close-btn" aria-label="Close chat">&times;</button>
+            </div>
+            <div class="chat-messages">
+                <div class="message user-message">
+                    <img class="message-avatar" src="medium.png" alt="User Avatar">
+                    <div class="message-content">
+                        Hello
+                    </div>
+                </div>
+                <div class="message bot-message">
+                    <img class="message-avatar" src="nin/Actor/Characters/OldMan/Faceset.png" alt="Bot Avatar">
+                    <div class="message-content with-border">
+                        <span class="message-text-content">Hello! How can I assist you today?</span>
+                        <span class="bot-audio-trigger" aria-label="Play message audio">
+                            <svg viewBox="0 0 24 24" class="bot-audio-icon">
+                                <path d="M3 9v6h4l5 5V4L7 9H3zm13.5 3c0-1.77-1.02-3.29-2.5-4.03v8.05c1.48-.73 2.5-2.25 2.5-4.02zM14 3.23v2.06c2.89.86 5 3.54 5 6.71s-2.11 5.85-5 6.71v2.06c4.01-.91 7-4.49 7-8.77s-2.99-7.86-7-8.77z"></path>
+                            </svg>
+                        </span>
+                    </div>
+                </div>
+                <div class="message user-message voice-message-example">
+                    <img class="message-avatar" src="medium.png" alt="User Avatar">
+                    <div class="message-content voice-player">
+                        <span class="play-icon" aria-label="Play voice message">
+                            <svg viewBox="0 0 24 24"><path d="M8 5v14l11-7z"></path></svg>
+                        </span>
+                        <div class="waveform">
+                            <span class="bar" style="height: 60%;"></span>
+                            <span class="bar" style="height: 80%;"></span>
+                            <span class="bar" style="height: 100%;"></span>
+                            <span class="bar" style="height: 70%;"></span>
+                            <span class="bar" style="height: 50%;"></span>
+                            <span class="bar" style="height: 75%;"></span>
+                            <span class="bar" style="height: 90%;"></span>
+                            <span class="bar" style="height: 65%;"></span>
+                        </div>
+                        <span class="duration">0:07</span>
+                    </div>
+                </div>
+                <!-- New Bot Message with Text and Image -->
+                <div class="message bot-message">
+                    <img class="message-avatar" src="nin/Actor/Characters/OldMan/Faceset.png" alt="Bot Avatar">
+                    <div class="message-content with-border">
+                        <p>
+                            <span class="message-text-content">Certainly! A CPU <img src="cpuu.png" style="width: 20px; vertical-align: middle;"> thinks really fast and tells the computer what to do.</span>
+                            <span class="bot-audio-trigger" aria-label="Play message audio">
+                                <svg viewBox="0 0 24 24" class="bot-audio-icon">
+                                    <path d="M3 9v6h4l5 5V4L7 9H3zm13.5 3c0-1.77-1.02-3.29-2.5-4.03v8.05c1.48-.73 2.5-2.25 2.5-4.02zM14 3.23v2.06c2.89.86 5 3.54 5 6.71s-2.11 5.85-5 6.71v2.06c4.01-.91 7-4.49 7-8.77s-2.99-7.86-7-8.77z"></path>
+                                </svg>
+                            </span>
+                        </p>
+                        <img src="exp.png" alt="Example Image" class="inline-image">
+                    </div>
+                </div>
+                 <!-- More messages can be added here -->
+            </div>
+            <div class="chat-input-area">
+                <button class="voice-btn" aria-label="Record voice message">
+                    <svg viewBox="0 0 24 24">
+                        <path d="M12 14c1.66 0 2.99-1.34 2.99-3L15 5c0-1.66-1.34-3-3-3S9 3.34 9 5v6c0 1.66 1.34 3 3 3zm5.3-3c0 3-2.54 5.1-5.3 5.1S6.7 14 6.7 11H5c0 3.41 2.72 6.23 6 6.72V21h2v-3.28c3.28-.48 6-3.3 6-6.72h-1.7z"></path>
+                    </svg>
+                </button>
+                <input type="text" placeholder="Type a message...">
+                <button class="send-btn" aria-label="Send message">
+                    <svg viewBox="0 0 24 24" fill="currentColor">
+                        <path d="M2.01 21L23 12 2.01 3 2 10l15 2-15 2z"></path>
+                    </svg>
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Basic interactivity (optional) for nav items
+        const navItems = document.querySelectorAll('.nav-item');
+        navItems.forEach(item => {
+            item.addEventListener('click', () => {
+                navItems.forEach(i => i.classList.remove('active'));
+                item.classList.add('active');
+                // if (item.textContent.trim().toLowerCase().includes('chat')) {
+                //     // Potentially navigate or show chat view if this was a single page app
+                //     console.log('Chat selected');
+                // }
+            });
+        });
+
+        // Chat Popup Script
+        const chatTrigger = document.getElementById('chatPopupTrigger');
+        const chatWidgetContainer = document.getElementById('chatWidgetContainer');
+        // Ensure we select the close button within the chatWidgetContainer context
+        const closeChatButton = chatWidgetContainer.querySelector('.chat-header .close-btn');
+        const voiceMessageButton = chatWidgetContainer.querySelector('.voice-btn');
+        const examplePlayButton = chatWidgetContainer.querySelector('.voice-message-example .play-icon');
+        const botAudioIcons = chatWidgetContainer.querySelectorAll('.bot-audio-icon'); // Get all bot audio icons
+
+        if (chatTrigger && chatWidgetContainer) {
+            chatTrigger.addEventListener('click', () => {
+                chatWidgetContainer.classList.add('open');
+                chatTrigger.style.display = 'none'; // Hide trigger when chat is open
+            });
+
+            if (closeChatButton) {
+                closeChatButton.addEventListener('click', () => {
+                    chatWidgetContainer.classList.remove('open');
+                    // Delay showing trigger until chat is mostly closed to avoid overlap
+                    setTimeout(() => {
+                        if (chatTrigger) { // Check if trigger still exists
+                           chatTrigger.style.display = 'block';
+                        }
+                    }, 350); // Adjust timing to match/exceed animation duration
+                });
+            }
+        }
+
+        // Placeholder for voice input functionality
+        if (voiceMessageButton) {
+            voiceMessageButton.addEventListener('click', () => {
+                console.log('Voice message button clicked - implement recording logic here.');
+                // 1. Request microphone permission
+                // 2. Start recording using Web Audio API (AudioContext, MediaRecorder)
+                // 3. Provide visual feedback (e.g., change icon, show timer)
+                // 4. On stop, get the audio data (Blob)
+                // 5. Send to server or process/display locally
+            });
+        }
+
+        // Placeholder for playing example voice message
+        if (examplePlayButton) {
+            examplePlayButton.addEventListener('click', () => {
+                console.log('Example play button clicked - implement playback logic here.');
+                // This would typically involve creating an <audio> element dynamically
+                // or using Web Audio API to play a pre-recorded or generated sound.
+                alert('Playing voice message (example)...');
+            });
+        }
+
+        // Add event listener for bot audio icons
+        const chatMessagesContainer = chatWidgetContainer.querySelector('.chat-messages');
+
+        if (chatMessagesContainer) {
+            chatMessagesContainer.addEventListener('click', function(event) {
+                const audioTrigger = event.target.closest('.bot-audio-trigger');
+                if (audioTrigger) {
+                    event.stopPropagation(); // Prevent other click listeners if needed
+                    const messageContentElement = audioTrigger.closest('.message-content');
+                    if (messageContentElement) {
+                        const textElement = messageContentElement.querySelector('.message-text-content');
+                        if (textElement) {
+                            const messageText = (textElement.textContent || textElement.innerText || "").replace(/\s+/g, ' ').trim();
+                            if (messageText) {
+                                console.log('Play audio for (bot):', messageText);
+                                // Placeholder for actual TTS call:
+                                // Example: if (typeof responsiveVoice !== 'undefined') { responsiveVoice.speak(messageText); }
+                                // Or: const utterance = new SpeechSynthesisUtterance(messageText); window.speechSynthesis.speak(utterance);
+                                alert('Simulating TTS for: ' + messageText);
+                            } else {
+                                console.warn('Bot audio trigger clicked, but no text found in .message-text-content');
+                            }
+                        } else {
+                            console.warn('Bot audio trigger clicked, but .message-text-content element not found.');
+                        }
+                    }
+                }
+            });
+        }
+    </script>
+</body>
+</html>

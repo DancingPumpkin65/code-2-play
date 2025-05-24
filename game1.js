@@ -6,11 +6,6 @@ const canvas = document.getElementById('gameCanvas');
 const ctx = canvas.getContext('2d');
 const scoreDisplay = document.getElementById('score');
 
-// Grab progress bar and CPU icon elements
-const progressBarFill = document.getElementById('progress-bar-fill');
-const iconCpu = document.getElementById('icon-cpu');
-const progressBarContainer = document.getElementById('progress-bar-container');
-
 // Game settings
 const gridCols = 15, gridRows = 15, gridSize = 50;
 canvas.width = gridCols * gridSize;
@@ -19,7 +14,7 @@ let score = 0;
 
 // Asset paths (relative to index.html)
 const ninjaImagePath = 'nin/Actor/Characters/Boy/SeparateAnim/Idle.png'; // Using Idle for simplicity
-const appleImagePath = 'cpu.png';
+const appleImagePath = 'cpuu.png';
 
 // Load images
 const ninjaImage = new Image();
@@ -28,14 +23,14 @@ const appleImage = new Image();
 appleImage.src = appleImagePath;
 // Map background image
 const mapImage = new Image();
-mapImage.src = 'map1.png';
+mapImage.src = 'map3.png';
 // Walk and idle sprite sheets
 const walkSheet = new Image();
-walkSheet.src = 'nin/Actor/Characters/KnightGold/SeparateAnim/Walk.png';
+walkSheet.src = 'nin/Actor/Characters/Princess/SeparateAnim/Walk.png';
 const idleSheet = new Image();
-idleSheet.src = 'nin/Actor/Characters/KnightGold/SeparateAnim/Idle.png';
+idleSheet.src = 'nin/Actor/Characters/Princess/SeparateAnim/Idle.png';
 // Game item: CPU position on grid
-const cpuStart = { col: 2, row: 9 }; // specify CPU tile coordinates
+const cpuStart = { col: 7, row: 2 }; // specify CPU tile coordinates
 const apple = { x: 0, y: 0, width: gridSize, height: gridSize };
 
 // flag to track CPU collection
@@ -56,14 +51,14 @@ const yesButtonImage = new Image();
 yesButtonImage.src = 'nin/Ui/Dialog/YesButton.png';
 // Character faceset image
 const knightFacesetImage = new Image();
-knightFacesetImage.src = 'nin/Actor/Characters/KnightGold/Faceset.png';
+knightFacesetImage.src = 'nin/Actor/Characters/Princess/Faceset.png';
 // Dialog info popup sprite (4 frames)
 const dialogInfoImage = new Image();
 dialogInfoImage.src = 'nin/Ui/Dialog/DialogInfo.png';
 
 // Item and death sprites
-const itemImage = new Image(); itemImage.src = 'nin/Actor/Characters/KnightGold/SeparateAnim/Item.png';
-const deadImage = new Image(); deadImage.src = 'nin/Actor/Characters/KnightGold/SeparateAnim/Dead.png';
+const itemImage = new Image(); itemImage.src = 'nin/Actor/Characters/Princess/SeparateAnim/Item.png';
+const deadImage = new Image(); deadImage.src = 'nin/Actor/Characters/Princess/SeparateAnim/Dead.png';
 
 // --- Image Loading Check ---
 let imagesLoaded = 0;
@@ -322,34 +317,20 @@ function update() {
     // Check for CPU collection collision
     if (!cpuCollected &&
         player.x < apple.x + apple.width &&
-        player.x + gridSize > apple.x &&
+        player.x + (frameWidth * scale) > apple.x &&
         player.y < apple.y + apple.height &&
-        player.y + gridSize > apple.y) {
+        player.y + (frameHeight * scale) > apple.y
+    ) {
         cpuCollected = true;
-        score += 10;
-
-        // Animate player holding item
-        player.setAnimation('item');
-
-        // Animate progress bar to fill up to motherboard icon
-        // Calculate the midpoint of the motherboard icon
-        const mbIcon = document.getElementById('icon-motherboard');
-        const mbRect = mbIcon.getBoundingClientRect();
-        const barRect = progressBarContainer.getBoundingClientRect();
-        // Relative position within the bar
-        const fillPx = mbRect.left + mbRect.width/2 - barRect.left;
-        progressBarContainer.style.setProperty('--__internal__progress-bar-value', `${fillPx}px`);
-        iconCpu.classList.add('achieved');
-
-        // Show dialog popup
+        dialogText = 'Mission complete!';
         showDialog = true;
-        dialogText = 'CPU collected!';
+        player.setAnimation('item');
     }
 }
 
 // Dialog state
 let showDialog = true;
-let dialogText = 'Mission: Collect the CPU!';
+let dialogText = 'Help Anna collect the CPU!';
 // rectangle to track YesButton position
 let yesButtonRect = { x: 0, y: 0, width: 0, height: 0 };
 

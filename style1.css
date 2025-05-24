@@ -81,8 +81,8 @@ body {
 }
 .nav-item.active.learn-active { 
     background: #1a202c; 
-    color: #3f9eca;
-    border-left-color: #3f9eca; /* Ensure this is for desktop */
+    color: rgba(239, 149, 151, 255);
+    border-left-color: rgba(239, 149, 151, 255); /* Ensure this is for desktop */
     border-bottom-color: transparent; /* Reset for mobile if it was set */
 }
 
@@ -119,9 +119,9 @@ p {
 .btn {
   width: 50px;
   height: 50px;
-  border: 2px solid white;
+  border: 2px solid rgba(255, 203, 169, 255);
   border-radius: 8px;
-  background: #58cc02;
+  background: rgba(239, 149, 151, 255);
   color: white;
   font-size: 24px;
   cursor: pointer;
@@ -152,81 +152,6 @@ p {
 .press-right {
   border-width: 3px 1px 3px 5px;
   transform: translateX(2px);
-}
-
-/* Progress bar section */
-#progress-section {
-    position: relative;
-    top: 75px;
-    width: 100%;
-    max-width: 700px;
-    margin: 10px 0;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-}
-
-#progress-bar-container {
-    width: 100%;
-    height: 20px;
-    background: #37464f;
-    border: 2px solid #37464f;
-    border-radius: 8px;
-    overflow: hidden;
-    /* CSS variables for progress bar logic */
-    --web-ui_progress-bar-color: #ffc700;
-    --web-ui_progress-bar-shine-height: 3px;
-    --__internal__progress-bar-height: 20px;
-    --__internal__progress-bar-value: 0%;
-}
-
-#progress-bar-fill {
-    position: relative;  /* enable absolute child positioning */
-    width: var(--__internal__progress-bar-value);
-    height: 100%;
-    background: var(--web-ui_progress-bar-color);
-    transition: width 1s ease-in-out;
-}
-
-#progress-icons-container {
-    width: 100%;
-    display: flex;
-    justify-content: space-between;
-    padding: 0 4px;
-    box-sizing: border-box;
-    margin-top: 4px;
-}
-
-.progress-milestone {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-}
-
-.component-icon {
-    width: 28px;
-    height: 28px;
-    opacity: 0.8;
-    transition: opacity 0.4s ease;
-}
-
-.component-icon.achieved {
-    opacity: 1;
-}
-
-/* Shine effect inside progress fill for 3D look */
-._1EFTr {
-    background: white;
-    z-index: 8;
-    border-radius: 9999px;
-    height: var(--web-ui_progress-bar-shine-height, 30%);
-    left: calc(var(--__internal__progress-bar-height) / 4);
-    opacity: .2;
-    position: absolute;
-    top: 25%;
-    transition-duration: .4s;
-    transition-property: width;
-    width: 95%;
 }
 
 /* Responsive adjustments */
