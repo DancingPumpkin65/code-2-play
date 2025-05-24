@@ -87,13 +87,12 @@ body {
 }
 
 .game-content { /* New style for main game area */
+    position: relative; /* enable absolute positioned children like info popup */
     flex-grow: 1; /* Takes remaining space */
     display: flex;
     flex-direction: column;
     align-items: center;
-    justify-content: center;
-    padding: 20px;
-    overflow-y: hidden; /* Allow content to scroll if needed, esp. on mobile */
+    justify-content: end;
 }
 
 canvas {
@@ -160,7 +159,6 @@ p {
     top: 75px;
     width: 100%;
     max-width: 700px;
-    margin: 10px 0;
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -227,6 +225,38 @@ p {
     transition-duration: .4s;
     transition-property: width;
     width: 95%;
+}
+
+/* Info popup for CPU description */
+.info-popup {
+    /* hidden initially by opacity and transform for slide-in animation */
+    position: absolute;
+    top: 30%;
+    right: -100px;
+    opacity: 0;
+    transform: translateX(20px);
+    transition: opacity 0.5s ease, transform 0.5s ease;
+    width: 250px;
+    background: #131f24;
+    color: #ffffff;
+    border: 2px solid #37464f;
+    border-radius: 8px;
+    padding: 10px;
+    font-size: 14px;
+    line-height: 1.4;
+    text-align: left;
+}
+.info-popup.visible {
+    opacity: 1;
+    transform: translateX(0);
+}
+.info-popup h3 {
+    margin: 0 0 8px;
+    font-size: 16px;
+    text-align: center;
+}
+.info-popup p {
+    margin: 4px 0;
 }
 
 /* Responsive adjustments */

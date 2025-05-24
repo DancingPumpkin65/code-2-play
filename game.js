@@ -10,6 +10,8 @@ const scoreDisplay = document.getElementById('score');
 const progressBarFill = document.getElementById('progress-bar-fill');
 const iconCpu = document.getElementById('icon-cpu');
 const progressBarContainer = document.getElementById('progress-bar-container');
+const infoPopup = document.querySelector('.info-popup'); // info popup element
+// Removed langControls and language button variables
 
 // Game settings
 const gridCols = 15, gridRows = 15, gridSize = 50;
@@ -343,7 +345,9 @@ function update() {
 
         // Show dialog popup
         showDialog = true;
-        dialogText = 'CPU collected!';
+        dialogText = 'A CPU thinks really fast and tells the computer what to do';
+        // show language controls below the dialog
+        // if (langControls) langControls.style.display = 'flex';
     }
 }
 
@@ -352,7 +356,8 @@ let showDialog = true;
 let dialogText = 'Mission: Collect the CPU!';
 // rectangle to track YesButton position
 let yesButtonRect = { x: 0, y: 0, width: 0, height: 0 };
-
+// language button rectangles for canvas dialog
+let languageButtons = []; // each { x, y, width, height, lang }
 // dialogInfo animation settings
 const dialogInfoFrameCount = 4;
 let dialogInfoFrame = 0, dialogInfoTick = 0;
@@ -394,7 +399,7 @@ function gameLoop() {
         ctx.drawImage(dialogueBoxImage, dlgX, dlgY, dlgW, dlgH);
         // overlay text
         ctx.font = `${15 * combScale}px sans-serif`;
-        ctx.fillStyle = '#fffffff';
+        ctx.fillStyle = '#000000'; // black text for dialog
         ctx.fillText(dialogText, dlgX + 10 * combScale, dlgY + dlgH / 2);
         // Yes button
         const btnW = combW * 0.1;
@@ -403,6 +408,25 @@ function gameLoop() {
         const btnY = combY + combH - btnH - 10 * combScale;
         ctx.drawImage(yesButtonImage, btnX, btnY, btnW, btnH);
         yesButtonRect = { x: btnX, y: btnY, width: btnW, height: btnH };
+        // Draw language buttons inside dialog
+        const lbWidth = 40 * combScale;
+        const lbHeight = 20 * combScale;
+        const spacing = 10 * combScale;
+        const totalWidth = 3 * lbWidth + 2 * spacing;
+        let startX = dlgX + (dlgW - totalWidth) / 2;
+        const lbY = dlgY + dlgH + spacing;
+        const langs = ['EN','FR','AR'];
+        languageButtons = [];
+        ctx.font = `${12 * combScale}px sans-serif`;
+        langs.forEach((lang, i) => {
+            const lx = startX + i * (lbWidth + spacing);
+            ctx.fillStyle = '#ffffff'; // white button background
+            ctx.fillRect(lx, lbY, lbWidth, lbHeight);
+            ctx.fillStyle = '#000000'; // black button text
+            ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
+            ctx.fillText(lang, lx + lbWidth/2, lbY + lbHeight/2);
+            languageButtons.push({ x: lx, y: lbY, width: lbWidth, height: lbHeight, lang });
+        });
     }
 
     // DEBUG: visualize canvas grid of 32×32 cells
@@ -522,14 +546,28 @@ document.addEventListener("keydown", e => {
 
 // hide dialog on YesButton click
 canvas.addEventListener('click', function(e) {
+    const rect = canvas.getBoundingClientRect();
+    const clickX = e.clientX - rect.left;
+    const clickY = e.clientY - rect.top;
     if (showDialog) {
-        const rect = canvas.getBoundingClientRect();
-        const clickX = e.clientX - rect.left;
-        const clickY = e.clientY - rect.top;
+        // check language button clicks
+        for (const btn of languageButtons) {
+            if (clickX >= btn.x && clickX <= btn.x + btn.width &&
+                clickY >= btn.y && clickY <= btn.y + btn.height) {
+                // update dialogText by lang
+                if (btn.lang === 'EN') dialogText = 'A CPU thinks really fast and tells the computer what to do';
+                if (btn.lang === 'FR') dialogText = 'Le processeur pense très vite et dit à l’ordinateur quoi faire';
+                if (btn.lang === 'AR') dialogText = 'المعالج يفكر بسرعة ويخبر الحاسوب بما يجب عليه فعله';
+                return;
+            }
+        }
+        // check Yes button
         if (clickX >= yesButtonRect.x && clickX <= yesButtonRect.x + yesButtonRect.width &&
             clickY >= yesButtonRect.y && clickY <= yesButtonRect.y + yesButtonRect.height) {
             showDialog = false;
-        }
+            // hide language controls when dialog closed
+            // if (langControls) langControls.style.display = 'none';
+            }
     }
 });
 
