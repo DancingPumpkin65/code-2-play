@@ -375,7 +375,6 @@ function drawGrid() {
 // Draw blocked collision cells in semi-transparent red
 function drawCollisions() {
     ctx.save();
-    ctx.fillStyle = 'rgba(255, 0, 0, 0.4)';
     for (let row = 0; row < gridRows; row++) {
         for (let col = 0; col < gridCols; col++) {
             if (movementLimits[row][col] === 0) {
@@ -468,7 +467,7 @@ function gameLoop() {
     }
 
     // visualize collision blocks
-    drawCollisions();
+    // drawCollisions();
 
     // show initial dialog using combined layout dimensions
     if (showDialog && dialogueBoxImage.complete && facesetBoxImage.complete && knightFacesetImage.complete && yesButtonImage.complete) {
