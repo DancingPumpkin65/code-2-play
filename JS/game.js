@@ -192,7 +192,6 @@ class Player {
         if (nextCol < 0 || nextCol >= gridCols ||
             nextRow < 0 || nextRow >= gridRows ||
             movementLimits[nextRow][nextCol] === 0) {
-            this.setAnimation('dead');
             return;
         }
         // set movement and animation
