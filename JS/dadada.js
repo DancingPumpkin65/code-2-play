@@ -29,7 +29,7 @@ const appleImage = new Image();
 appleImage.src = appleImagePath;
 // Map background image
 const mapImage = new Image();
-mapImage.src = 'lib/map3.png';
+mapImage.src = 'lib/map1.png';
 // Walk and idle sprite sheets
 const walkSheet = new Image();
 walkSheet.src = 'nin/Actor/Characters/Princess/SeparateAnim/Walk.png';

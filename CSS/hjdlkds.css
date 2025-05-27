@@ -81,8 +81,8 @@ body {
 }
 .nav-item.active.learn-active { 
     background: #1a202c; 
-    color: #ef9597;
-    border-left-color: #ef9597; /* Ensure this is for desktop */
+    color: #3f9eca;
+    border-left-color: #3f9eca; /* Ensure this is for desktop */
     border-bottom-color: transparent; /* Reset for mobile if it was set */
 }
 
@@ -118,9 +118,9 @@ p {
 .btn {
   width: 50px;
   height: 50px;
-  border: 2px solid #ffcba9;
+  border: 2px solid white;
   border-radius: 8px;
-  background: #ef9597;
+  background: #58cc02;
   color: white;
   font-size: 24px;
   cursor: pointer;
