@@ -1,6 +1,6 @@
 @font-face {
     font-family: 'MyFont';
-    src: url('dinroundpro-medi/DINRoundPro-Bold.otf') format('opentype');
+    src: url('../dinroundpro-medi/DINRoundPro-Bold.otf') format('opentype');
     font-weight: 800;
     font-style: normal;
 }
@@ -17,16 +17,16 @@ body {
     font-family: 'MyFont', Arial, sans-serif; /* Updated font */
 }
 
-.game-container { /* New wrapper style */
+.game-container {
     display: flex;
     width: 100%;
-    max-width: 1400px; /* Optional: constrain max width */
-    height: 100vh; /* Make it full height */
-    position: relative; /* Needed for absolute positioning of sidebar on mobile */
+    max-width: 1400px;
+    height: 100vh;
+    position: relative;
 }
 
 .left-sidebar {
-    width: 210px; /* Fixed width for sidebar */
+    width: 210px;
     padding: 16px;
     border-right: 2px solid #37464f;
     display: flex;

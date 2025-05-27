@@ -1,6 +1,6 @@
 @font-face {
     font-family: 'MyFont';
-    src: url('dinroundpro-medi/DINRoundPro-Bold.otf') format('opentype');
+    src: url('../dinroundpro-medi/DINRoundPro-Bold.otf') format('opentype');
     font-weight: 800;
     font-style: normal;
 }
@@ -14,7 +14,7 @@ body {
     margin: 0;
     background-color: #131f24;
     overflow: hidden;
-    font-family: 'Pixelify Sans', 'MyFont', Arial, sans-serif; /* Use Pixelify Sans as primary */
+    font-family: 'MyFont', Arial, sans-serif;
 }
 
 .game-container { /* New wrapper style */

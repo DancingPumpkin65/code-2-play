@@ -14,7 +14,7 @@ let score = 0;
 
 // Asset paths (relative to index.html)
 const ninjaImagePath = 'nin/Actor/Characters/Boy/SeparateAnim/Idle.png'; // Using Idle for simplicity
-const appleImagePath = 'cpuu.png';
+const appleImagePath = 'lib/cpuu.png';
 
 // Load images
 const ninjaImage = new Image();
@@ -23,7 +23,7 @@ const appleImage = new Image();
 appleImage.src = appleImagePath;
 // Map background image
 const mapImage = new Image();
-mapImage.src = 'map3.png';
+mapImage.src = 'lib/map3.png';
 // Walk and idle sprite sheets
 const walkSheet = new Image();
 walkSheet.src = 'nin/Actor/Characters/Princess/SeparateAnim/Walk.png';
