@@ -385,6 +385,22 @@ function drawCollisions() {
     ctx.restore();
 }
 
+// Draws the audio SVG icon beside dialog text
+function drawAudioIcon(ctx, x, y, size = 24, color = '#A0A0A0') {
+    ctx.save();
+    ctx.translate(x, y);
+    ctx.scale(size / 24, size / 24);
+    ctx.beginPath();
+    // SVG path from user
+    ctx.moveTo(3,9); ctx.lineTo(3,15); ctx.lineTo(7,15); ctx.lineTo(12,20); ctx.lineTo(12,4); ctx.lineTo(7,9); ctx.lineTo(3,9);
+    ctx.moveTo(16.5,12); ctx.bezierCurveTo(16.5,10.23,15.48,8.71,14,7.97); ctx.lineTo(14,16.02); ctx.bezierCurveTo(15.48,15.29,16.5,13.77,16.5,12);
+    ctx.moveTo(14,3.23); ctx.lineTo(14,5.29); ctx.bezierCurveTo(16.89,6.15,19,8.83,19,12); ctx.bezierCurveTo(19,15.17,16.89,17.85,14,18.71); ctx.lineTo(14,20.77); ctx.bezierCurveTo(18.01,19.86,21,16.28,21,12); ctx.bezierCurveTo(21,7.72,18.01,4.14,14,3.23);
+    ctx.closePath();
+    ctx.fillStyle = color;
+    ctx.fill();
+    ctx.restore();
+}
+
 // --- Update game state ---
 function update() {
     player.update();
@@ -539,10 +555,18 @@ function gameLoop() {
         const words = dialogText.split(' ');
         let line = '';
         let y = initialY;
+        let firstLineWidth = 0;
+        let firstLineY = initialY;
+        let firstLine = true;
         for (const word of words) {
             const testLine = line + word + ' ';
             if (ctx.measureText(testLine).width > maxTextWidth && line) {
                 ctx.fillText(line, textX, y);
+                if (firstLine) {
+                    firstLineWidth = ctx.measureText(line).width;
+                    firstLineY = y;
+                    firstLine = false;
+                }
                 line = word + ' ';
                 y += lineHeight;
             } else {
@@ -550,6 +574,18 @@ function gameLoop() {
             }
         }
         ctx.fillText(line, textX, y);
+        if (firstLine) {
+            firstLineWidth = ctx.measureText(line).width;
+            firstLineY = y;
+        }
+        // Draw audio icon to the left of the first language button
+        const iconSize = lbHeight * 0.8; // slightly smaller than button height
+        const iconOffsetX = 8 * combScale; // horizontal gap between icon and first button
+        const firstBtnX = btnX - btnGap - lbWidth + dialogBtnOffsetX * combScale;
+        const firstBtnY = btnY + dialogBtnOffsetY * combScale;
+        const iconX = firstBtnX - iconSize - iconOffsetX;
+        const iconY = firstBtnY + (lbHeight - iconSize) / 2;
+        drawAudioIcon(ctx, iconX, iconY, iconSize, '#A0A0A0');
         // Yes button
         const btnW = combW * 0.1;
         const btnH = yesButtonImage.naturalHeight * (btnW / yesButtonImage.naturalWidth);
@@ -754,3 +790,10 @@ setTimeout(() => {
         }
     }
 }, 5000); // 5 seconds timeout
+
+// Add this at the end of the body in your HTML (index.html or girl_version.html):
+// <div id="audio-icon-svg" style="position:absolute;z-index:10;pointer-events:auto;display:none;">
+//   <svg viewBox="0 0 24 24" class="bot-audio-icon" width="32" height="32" fill="#222">
+//     <path d="M3 9v6h4l5 5V4L7 9H3zm13.5 3c0-1.77-1.02-3.29-2.5-4.03v8.05c1.48-.73 2.5-2.25 2.5-4.02zM14 3.23v2.06c2.89.86 5 3.54 5 6.71s-2.11 5.85-5 6.71v2.06c4.01-.91 7-4.49 7-8.77s-2.99-7.86-7-8.77z"></path>
+//   </svg>
+// </div>
