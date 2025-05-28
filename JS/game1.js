@@ -399,30 +399,28 @@ function update() {
     // Check for CPU collection collision
     if (!cpuCollected &&
         player.x < apple.x + apple.width &&
-        player.x + gridSize > apple.x &&
+        player.x + (frameWidth * scale) > apple.x &&
         player.y < apple.y + apple.height &&
-        player.y + gridSize > apple.y) {
+        player.y + (frameHeight * scale) > apple.y
+    ) {
         cpuCollected = true;
         score += 10;
-
         // Animate player holding item
         player.setAnimation('item');
-
         // Animate progress bar to fill up to motherboard icon
-        // Calculate the midpoint of the motherboard icon
         const mbIcon = document.getElementById('icon-motherboard');
-        const mbRect = mbIcon.getBoundingClientRect();
-        const barRect = progressBarContainer.getBoundingClientRect();
-        // Relative position within the bar
-        const fillPx = mbRect.left + mbRect.width/2 - barRect.left;
-        progressBarContainer.style.setProperty('--__internal__progress-bar-value', `${fillPx}px`);
-        iconCpu.classList.add('achieved');
-
+        const progressBarContainer = document.getElementById('progress-bar-container');
+        if (mbIcon && progressBarContainer) {
+            const mbRect = mbIcon.getBoundingClientRect();
+            const barRect = progressBarContainer.getBoundingClientRect();
+            const fillPx = mbRect.left + mbRect.width/2 - barRect.left;
+            progressBarContainer.style.setProperty('--__internal__progress-bar-value', `${fillPx}px`);
+            const iconCpu = document.getElementById('icon-cpu');
+            if (iconCpu) iconCpu.classList.add('achieved');
+        }
         // Show dialog popup
         showDialog = true;
-        dialogText = dialogTexts.EN[1]; // post-collect EN dialog
-        // show language controls below the dialog
-        // if (langControls) langControls.style.display = 'flex';
+        dialogText = dialogTexts.EN[1]; // show language controls below the dialog
     }
 }
 
