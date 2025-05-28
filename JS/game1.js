@@ -265,75 +265,56 @@ const movementLimits = [
 // --- Custom collision blocks ---
 // Define coordinates (col,row) of tiles to block
 const collisionBlocks = [
-    {col: 1, row: 6},
-    {col: 2, row: 6},
-    {col: 3, row: 6},
-    {col: 4, row: 6},
-    {col: 5, row: 6},
-    {col: 1, row: 5},
-    {col: 2, row: 5},
-    {col: 3, row: 5},
-    {col: 4, row: 5},
-    {col: 5, row: 5},
-    {col: 1, row: 4},
-    {col: 2, row: 4},
-    {col: 3, row: 4},
-    {col: 4, row: 4},
-    {col: 5, row: 4},
-    {col: 1, row: 3},
-    {col: 2, row: 3},
-    {col: 3, row: 3},
-    {col: 1, row: 2},
-    {col: 2, row: 2},
-    {col: 3, row: 2},
+    {col: 1, row: 0},
     {col: 1, row: 1},
-    {col: 2, row: 1},
-    {col: 3, row: 1},
-    {col: 12, row: 9},
-    {col: 10, row: 9},
-    {col: 11, row: 9},
-    {col: 12, row: 10},
-    {col: 10, row: 10},
-    {col: 11, row: 10},
-    {col: 12, row: 11},
-    {col: 10, row: 11},
-    {col: 11, row: 11},
-    {col: 12, row: 12},
-    {col: 10, row: 12},
-    {col: 11, row: 12},
-    {col: 12, row: 13},
-    {col: 10, row: 13},
-    {col: 11, row: 13},
-    {col: 10, row: 2},
-    {col: 11, row: 2},
-    {col: 10, row: 1},
-    {col: 11, row: 1},
-    {col: 0, row: 0},
+    {col: 1, row: 2},
+    {col: 1, row: 3},
+    {col: 1, row: 4},
+    {col: 1, row: 5},
+    {col: 1, row: 6},
+    {col: 2, row: 7},
+    {col: 2, row: 8},
+    {col: 1, row: 9},
+    {col: 1, row: 10},
+    {col: 2, row: 11},
+    {col: 2, row: 12},
+    {col: 1, row: 13},
+    {col: 2, row: 14},
     {col: 5, row: 0},
     {col: 6, row: 0},
-    {col: 8, row: 1},
-    {col: 6, row: 3},
+    {col: 5, row: 1},
+    {col: 6, row: 1},
+    {col: 9, row: 0},
     {col: 7, row: 3},
-    {col: 0, row: 7},
-    {col: 1, row: 7},
-    {col: 5, row: 11},
+    {col: 8, row: 3},
+    {col: 9, row: 2},
+    {col: 9, row: 1},
+    {col: 8, row: 4},
+    {col: 9, row: 4},
+    {col: 10, row: 4},
+    {col: 11, row: 4},
+    {col: 12, row: 5},
+    {col: 13, row: 6},
+    {col: 14, row: 6},
     {col: 4, row: 11},
+    {col: 5, row: 11},
+    {col: 6, row: 11},
     {col: 7, row: 11},
-    {col: 0, row: 10},
-    {col: 9, row: 8},
-    {col: 10, row: 6},
-    {col: 11, row: 6},
-    {col: 8, row: 14},
-    {col: 5, row: 13},
-    {col: 14, row: 7},
-    {col: 14, row: 4},
-    {col: 13, row: 4},
-    {col: 1, row: 14},
-    {col: 2, row: 14},
-    {col: 3, row: 14},
-    {col: 4, row: 14},
-    {col: 2, row: 13},
-    {col: 3, row: 13},
+    {col: 8, row: 11},
+    {col: 9, row: 11},
+    {col: 10, row: 11},
+    {col: 11, row: 11},
+    {col: 12, row: 11},
+    {col: 13, row: 11},
+    {col: 14, row: 11},
+    {col: 4, row: 12},
+    {col: 4, row: 13},
+    {col: 5, row: 14},
+    {col: 6, row: 5},
+    {col: 6, row: 6},
+    {col: 7, row: 5},
+    {col: 7, row: 6},
+    
 ];
 // Apply blocks
 collisionBlocks.forEach(({col,row}) => {
@@ -375,6 +356,7 @@ function drawGrid() {
 // Draw blocked collision cells in semi-transparent red
 function drawCollisions() {
     ctx.save();
+    ctx.fillStyle = 'rgba(255, 0, 0, 0)'; // solid red for testing
     for (let row = 0; row < gridRows; row++) {
         for (let col = 0; col < gridCols; col++) {
             if (movementLimits[row][col] === 0) {
@@ -481,7 +463,7 @@ function gameLoop() {
     }
 
     // visualize collision blocks
-    // drawCollisions();
+    drawCollisions();
 
     // show initial dialog using combined layout dimensions
     if (showDialog && dialogueBoxImage.complete && facesetBoxImage.complete && knightFacesetImage.complete && yesButtonImage.complete) {
@@ -578,13 +560,12 @@ function gameLoop() {
             firstLineWidth = ctx.measureText(line).width;
             firstLineY = y;
         }
-        // Draw audio icon to the left of the first language button
-        const iconSize = lbHeight * 0.8; // slightly smaller than button height
-        const iconOffsetX = 8 * combScale; // horizontal gap between icon and first button
-        const firstBtnX = btnX - btnGap - lbWidth + dialogBtnOffsetX * combScale;
-        const firstBtnY = btnY + dialogBtnOffsetY * combScale;
-        const iconX = firstBtnX - iconSize - iconOffsetX;
-        const iconY = firstBtnY + (lbHeight - iconSize) / 2;
+        // Draw audio icon beside the first line of dialog text
+        const iconSize = fontSizePx * 1;
+        const iconOffsetX = 2 * combScale; // horizontal space from text
+        const iconOffsetY = 10; // vertical adjustment if needed
+        const iconX = textX + firstLineWidth + iconOffsetX;
+        const iconY = firstLineY - fontSizePx + (fontSizePx - iconSize) / 2 + iconOffsetY;
         drawAudioIcon(ctx, iconX, iconY, iconSize, '#A0A0A0');
         // Yes button
         const btnW = combW * 0.1;
