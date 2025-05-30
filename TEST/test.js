@@ -1,12 +1,12 @@
-// filepath: c:\Users\MAHITO\Downloads\ccczcz\code-2-play\TEST\test.js
 const canvas = document.getElementById('tileMapCanvas');
 const ctx = canvas.getContext('2d');
 
-const tileSize = 16; // Each tile is 16x16 pixels
-const tilesPerRowInImage = 16; // Number of tiles per row in the tileset image
-const mapCols = 19; // As per data.js, each row has 19 elements
+ctx.imageSmoothingEnabled = false;
 
-// Assuming tileLayer1 is available from data.js
+const tileSize = 16;
+const tilesPerRowInImage = 5;
+const mapCols = 19;
+
 const mapRows = tileLayer1.length / mapCols;
 
 canvas.width = mapCols * tileSize;
@@ -16,13 +16,21 @@ const tilesetImage = new Image();
 tilesetImage.src = 'TilesetField.png'; // Path to your tileset image
 
 tilesetImage.onload = () => {
+    // First, render base layer (tileLayer1)
+    renderTileLayer(tileLayer1);
+    
+    // Then, render the top layer (tileLayer2)
+    renderTileLayer(tileLayer2);
+};
+
+function renderTileLayer(layerData) {
     for (let row = 0; row < mapRows; row++) {
         for (let col = 0; col < mapCols; col++) {
             const tileIndex = row * mapCols + col;
-            const tileID = tileLayer1[tileIndex];
+            const tileID = layerData[tileIndex];
 
             if (tileID === 0) {
-                continue;
+                continue; // Skip empty tiles
             }
 
             // tileID = (imageRow * tilesPerRowInImage) + imageCol + 1
@@ -48,7 +56,7 @@ tilesetImage.onload = () => {
             );
         }
     }
-};
+}
 
 tilesetImage.onerror = () => {
     console.error('Failed to load the tileset image.');
