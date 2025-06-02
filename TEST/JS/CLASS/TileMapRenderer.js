@@ -1,54 +1,56 @@
 class TileMapRenderer {
-    constructor({ canvasId, tilesetSrc, layers, tileSize, mapCols, mapRows, firstGid = 1 }) {
+    constructor({ canvasId, tileSize, mapCols, mapRows, layers }) {
         this.canvas = document.getElementById(canvasId);
         this.ctx = this.canvas.getContext('2d');
         this.ctx.imageSmoothingEnabled = false;
-        this.tilesetImage = new Image();
-        this.tilesetImage.src = tilesetSrc;
-        this.layers = layers;
         this.tileSize = tileSize;
         this.mapCols = mapCols;
-        this.mapRows = mapRows || (layers[0].length / mapCols) | 0;
-        this.tilesPerRowInImage = 0;
-        this.imageLoaded = false;
-        this.firstGid = firstGid;
+        this.mapRows = mapRows || (layers[0].data.length / mapCols) | 0;
+        this.layers = layers;  // each: { data, tilesetSrc, firstGid }
+
+        // load each unique tileset image
+        const srcs = [...new Set(layers.map(l => l.tilesetSrc))];
+        this.tilesetImages = {};
+        this.tilesPerRow = {};
+        let loaded = 0;
+        srcs.forEach(src => {
+            const img = new Image();
+            img.src = src;
+            img.onload = () => {
+                this.tilesPerRow[src] = Math.floor(img.width / this.tileSize);
+                if (++loaded === srcs.length) this.renderAll();
+            };
+            this.tilesetImages[src] = img;
+        });
 
         this.canvas.width = this.mapCols * this.tileSize;
         this.canvas.height = this.mapRows * this.tileSize;
-
-        this.tilesetImage.onload = () => {
-            this.tilesPerRowInImage = Math.floor(this.tilesetImage.width / this.tileSize);
-            this.imageLoaded = true;
-            this.renderAll();
-        };
     }
 
     renderAll() {
-        if (!this.imageLoaded) return;
         this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
         this.layers.forEach(layer => this.renderLayer(layer));
     }
 
-    renderLayer(layerData) {
-        for (let row = 0; row < this.mapRows; row++) {
-            for (let col = 0; col < this.mapCols; col++) {
-                const idx = row * this.mapCols + col;
-                const gid = layerData[idx];
-                if (!gid || gid < this.firstGid) continue;
-                const localId = gid - this.firstGid + 1;
-                const imgCol = (localId - 1) % this.tilesPerRowInImage;
-                const imgRow = Math.floor((localId - 1) / this.tilesPerRowInImage);
-                const sx = imgCol * this.tileSize;
-                const sy = imgRow * this.tileSize;
-                const dx = col * this.tileSize;
-                const dy = row * this.tileSize;
+    renderLayer({ data, tilesetSrc, firstGid }) {
+        const img = this.tilesetImages[tilesetSrc];
+        const tpr = this.tilesPerRow[tilesetSrc];
+        for (let i = 0; i < data.length; i++) {
+            const gid = data[i];
+            if (!gid || gid < firstGid) continue;
+            const localId = gid - firstGid + 1;
+            const col = i % this.mapCols;
+            const row = (i / this.mapCols) | 0;
+            const imgCol = (localId - 1) % tpr;
+            const imgRow = ((localId - 1) / tpr) | 0;
 
-                this.ctx.drawImage(
-                    this.tilesetImage,
-                    sx, sy, this.tileSize, this.tileSize,
-                    dx, dy, this.tileSize, this.tileSize
-                );
-            }
+            this.ctx.drawImage(
+                img,
+                imgCol * this.tileSize, imgRow * this.tileSize,
+                this.tileSize, this.tileSize,
+                col * this.tileSize, row * this.tileSize,
+                this.tileSize, this.tileSize
+            );
         }
     }
 }
