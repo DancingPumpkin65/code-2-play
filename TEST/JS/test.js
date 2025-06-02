@@ -12,7 +12,7 @@ const renderer1 = new TileMapRenderer({
             columns:     22,
             width:       352,
             height:      417,
-            firstGid:    580,
+            firstGrid:    580,
             data:        tileLayer3,
             collision:   false
         },
@@ -25,7 +25,7 @@ const renderer1 = new TileMapRenderer({
             columns:     5,
             width:       80,
             height:      240,
-            firstGid:    1,
+            firstGrid:    1,
             data:        tileLayer2,
             collision:   false
         }
@@ -39,19 +39,6 @@ const renderer2 = new TileMapRenderer({
     layers: [
         {
             name:        'Floor',
-            tilesetSrc:  'TILESETS/TilesetFloor.png',
-            tilewidth:   16,
-            tileheight:  16,
-            tilecount:   572,
-            columns:     22,
-            width:       352,
-            height:      417,
-            firstGid:    580,
-            data:        tileLayer3,
-            collision:   false
-        },
-        {
-            name:        'Field',
             tilesetSrc:  'TILESETS/TilesetField.png',
             tilewidth:   16,
             tileheight:  16,
@@ -59,8 +46,21 @@ const renderer2 = new TileMapRenderer({
             columns:     5,
             width:       80,
             height:      240,
-            firstGid:    1,
-            data:        tileLayer2,
+            firstGrid:    1,
+            data:        tileLayer1,
+            collision:   false
+        },
+        {
+            name:        'Field',
+            tilesetSrc:  'TILESETS/TilesetFloor.png',
+            tilewidth:   16,
+            tileheight:  16,
+            tilecount:   572,
+            columns:     22,
+            width:       352,
+            height:      417,
+            firstGrid:    580,
+            data:        tileLayer4,
             collision:   false
         }
     ]
