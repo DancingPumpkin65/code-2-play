@@ -6,9 +6,8 @@ class TileMapRenderer {
         this.tileSize = tileSize;
         this.mapCols = mapCols;
         this.mapRows = mapRows || (layers[0].data.length / mapCols) | 0;
-        this.layers = layers;  // each: { data, tilesetSrc, firstGid }
+        this.layers   = layers;
 
-        // load each unique tileset image
         const srcs = [...new Set(layers.map(l => l.tilesetSrc))];
         this.tilesetImages = {};
         this.tilesPerRow = {};
@@ -29,7 +28,10 @@ class TileMapRenderer {
 
     renderAll() {
         this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
-        this.layers.forEach(layer => this.renderLayer(layer));
+        this.layers.forEach(layer => {
+            if (layer.collision) return;
+            this.renderLayer(layer);
+        });
     }
 
     renderLayer({ data, tilesetSrc, firstGid }) {
